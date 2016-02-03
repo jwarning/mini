@@ -1,5 +1,5 @@
 import jsonXHR from 'json-xhr-promise'
-import mini from './mini'
+import mini from '../src'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
