@@ -1,8 +1,11 @@
+import jsonXHR from 'json-xhr-promise'
 import mini from './mini'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-const MY_ACTION = 'my_action'
+const MY_ACTION = 'MY_ACTION'
+const ASYNC_ACTION_START = 'ASYNC_ACTION_START'
+const ASYNC_ACTION_FINISH = 'ASYNC_ACTION_FINISH'
 
 let myComponent = props => {
   return React.createElement('div', null,
@@ -63,3 +66,18 @@ setTimeout(() => mini.createAction(MY_ACTION, { id: 7 }), 5000)
 mini.registerAction(MY_ACTION, () => true)
 
 mini.createAction('swag', { id: 0 })
+
+mini.registerAction(ASYNC_ACTION_START, () => {
+  jsonXHR('GET', 'http://jsonplaceholder.typicode.com/posts/1')
+  .then(data => {
+    mini.createAction('ASYNC_ACTION_FINISH', { data })
+  })
+})
+
+mini.registerAction(ASYNC_ACTION_FINISH, (state, action) => {
+  return Object.assign({}, state, {
+    data: action.data
+  })
+})
+
+mini.createAction(ASYNC_ACTION_START)

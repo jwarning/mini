@@ -43,8 +43,12 @@ export function createAction(actionType, action) {
     }
 
     const newState = actions.get(actionType)(currentState, action)
-    currentState = newState
-    state.onNext(currentState)
+
+    if (newState !== undefined) {
+      currentState = newState
+      state.onNext(currentState)
+    }
+
     resolve()
   })
 }
