@@ -8,7 +8,7 @@ browserify('src/index.js')
   .pipe(fs.createWriteStream('dist/index.js'))
 
 // examples
-browserify('examples/app.js')
+browserify('examples/todo-list/app.js')
   .transform('babelify')
   .bundle()
-  .pipe(fs.createWriteStream('dist/bundle.js'))
+  .pipe(fs.createWriteStream('examples/todo-list/dist/bundle.js'))
