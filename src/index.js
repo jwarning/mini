@@ -1,4 +1,4 @@
-import { Subject } from 'rx'
+import { Subject } from 'rxjs/Subject'
 
 const actions = new Map()
 const state = new Subject()
@@ -16,7 +16,7 @@ export function setState(newState) {
   }
 
   currentState = newState
-  state.onNext(currentState)
+  state.next(currentState)
 }
 
 export function registerAction(actionType, reducer) {
@@ -46,7 +46,7 @@ export function createAction(actionType, action) {
 
     if (newState !== undefined) {
       currentState = newState
-      state.onNext(currentState)
+      state.next(currentState)
     }
 
     resolve()
