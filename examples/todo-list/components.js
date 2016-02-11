@@ -17,16 +17,17 @@ const inputBox = props => {
 }
 
 const todoList = props => {
-  return React.createElement('div', null,
+  return React.createElement('div', { className: 'todo-list' },
     props.todos.map(t => React.createElement(todoItem, { key: t.id, todo: t }))
   )
 }
 
 const todoItem = props => {
-  return React.createElement('div', null,
+  return React.createElement('div', { className: 'todo-list__item' },
     React.createElement('span', null, props.todo.id + ' ' + props.todo.text),
     React.createElement('button', {
       type: 'button',
+      className: 'remove-button',
       onClick: mini.bindAction(REMOVE_TODO, { id: props.todo.id })
     }, 'Remove')
   )
@@ -34,6 +35,7 @@ const todoItem = props => {
 
 export const app = props => {
   return React.createElement('div', null,
+    React.createElement('div', { className: 'title' }, 'Todo list'),
     React.createElement(inputBox, null),
     // React.createElement('button', {
     //   type: 'button',
