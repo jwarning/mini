@@ -1,5 +1,5 @@
-import jsonXHR from 'json-xhr-promise'
 import mini from '../src'
+import fetch from 'isomorphic-fetch'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
@@ -68,10 +68,10 @@ mini.registerAction(MY_ACTION, () => true)
 mini.createAction('swag', { id: 0 })
 
 mini.registerAction(ASYNC_ACTION_START, () => {
-  jsonXHR('GET', 'http://jsonplaceholder.typicode.com/posts/1')
-  .then(data => {
-    mini.createAction('ASYNC_ACTION_FINISH', { data })
-  })
+  fetch('http://jsonplaceholder.typicode.com/posts/1')
+    .then(data => {
+      mini.createAction('ASYNC_ACTION_FINISH', { data })
+    })
 })
 
 mini.registerAction(ASYNC_ACTION_FINISH, (state, action) => {

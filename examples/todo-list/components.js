@@ -1,6 +1,6 @@
 import mini from '../../src'
 import React from 'react'
-import { ADD_TODO, REMOVE_TODO, REMOVE_ALL_TODOS } from './actionTypes'
+import { ADD_TODO, REMOVE_TODO, REMOVE_ALL_TODOS } from './actions'
 
 const inputBox = props => {
   return React.createElement('span', null,
