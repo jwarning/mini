@@ -45,7 +45,7 @@ export function createAction(actionType, action) {
     const newState = actions.get(actionType)(currentState, action)
 
     if (newState !== undefined) {
-      currentState = newState
+      currentState = Object.assign({}, currentState, newState)
       state.next(currentState)
     }
 

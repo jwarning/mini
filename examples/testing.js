@@ -31,9 +31,9 @@ mini.setState({
 })
 
 mini.registerAction(MY_ACTION, (state, action) => {
-  return Object.assign({}, state, {
+  return {
     stuff: action.id
-  })
+  }
 })
 
 setTimeout(() => mini.createAction(MY_ACTION, { id: 1 }), 1000)
@@ -54,9 +54,9 @@ mini.setState(100)
 setTimeout(() => subscription.dispose(), 10000)
 
 mini.registerAction(44, (state, action) => {
-  return Object.assign(state, {
+  return {
     stuff: action.id
-  })
+  }
 })
 
 mini.registerAction('yolo', 55)
