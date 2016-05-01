@@ -1,6 +1,6 @@
 import mini from '../../src'
-import React from 'react'
-import ReactDOM from 'react-dom'
+import createElement from 'inferno-create-element'
+import InfernoDOM from 'inferno-dom'
 import { registerActions } from './actions'
 import { app } from './components'
 
@@ -8,8 +8,7 @@ registerActions()
 
 mini.subscribeToState(state => {
   console.log(state)
-  ReactDOM.render(React.createElement(app, state),
-    document.getElementById('app'))
+  InfernoDOM.render(createElement(app, state), document.getElementById('app'))
 }, error => {
   console.error(error)
 })
