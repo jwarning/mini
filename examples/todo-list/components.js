@@ -1,4 +1,4 @@
-import mini from '../../src'
+import mini from '../../dist/index'
 import createElement from 'inferno-create-element'
 import { ADD_TODO, REMOVE_TODO, REMOVE_ALL_TODOS } from './actions'
 
@@ -35,7 +35,7 @@ const todoItem = props => {
 
 export const app = props => {
   return createElement('div', null,
-    createElement('div', { className: 'title' }, 'Todo list'),
+    createElement('div', { className: 'title' }, props.title),
     createElement(inputBox, null),
     // createElement('button', {
     //   type: 'button',

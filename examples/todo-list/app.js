@@ -1,4 +1,4 @@
-import mini from '../../src'
+import mini from '../../dist/index'
 import createElement from 'inferno-create-element'
 import InfernoDOM from 'inferno-dom'
 import { registerActions } from './actions'
@@ -14,5 +14,6 @@ mini.subscribeToState(state => {
 })
 
 mini.setState({
+  title: 'Todo list',
   todos: []
 })
