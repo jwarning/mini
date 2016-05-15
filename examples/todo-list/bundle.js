@@ -1,11 +1,3563 @@
-!function(t){function e(r){if(n[r])return n[r].exports;var o=n[r]={exports:{},id:r,loaded:!1};return t[r].call(o.exports,o,o.exports,e),o.loaded=!0,o.exports}var n={};return e.m=t,e.c=n,e.p="",e(0)}([function(t,e,n){t.exports=n(1)},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t}}var o=n(2),i=r(o),s=n(23),u=r(s),l=n(25),c=r(l),a=n(27),f=n(28);(0,a.registerActions)(),i["default"].subscribeToState(function(t){console.log(t),c["default"].render((0,u["default"])(f.app,t),document.getElementById("app"))},function(t){console.error(t)}),i["default"].setState({title:"Todo list",todos:[]})},function(t,e,n){var r,o,i;(function(t){"use strict";var s="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol?"symbol":typeof t};!function(u,l){"object"==s(e)&&"object"==s(t)?t.exports=l(n(4)):(o=[n(4)],r=l,i="function"==typeof r?r.apply(e,o):r,!(void 0!==i&&(t.exports=i)))}(void 0,function(t){return function(t){function e(r){if(n[r])return n[r].exports;var o=n[r]={exports:{},id:r,loaded:!1};return t[r].call(o.exports,o,o.exports,e),o.loaded=!0,o.exports}var n={};return e.m=t,e.c=n,e.p="",e(0)}([function(t,e,n){t.exports=n(1)},function(t,e,n){function r(t,e){return d.subscribe(t,e)}function o(t){return"object"!==("undefined"==typeof t?"undefined":c(t))?void console.error("State must be an object"):(p=t,void d.next(p))}function i(t,e){return"string"!=typeof t?void console.error("Action type must be a string"):"function"!=typeof e?void console.error("Action reducer must be a function"):f.has(t)?void console.error("Action of type "+t+" is already registered"):void f.set(t,e)}function u(t,e){return new Promise(function(n,r){if(!f.has(t))return console.error("No action of type "+t),void r();var o=f.get(t)(p,e);void 0!==o&&(p=Object.assign({},p,o),d.next(p)),n()})}function l(){for(var t=arguments.length,e=Array(t),n=0;t>n;n++)e[n]=arguments[n];return u.bind.apply(u,[null].concat(e))}Object.defineProperty(e,"__esModule",{value:!0});var c="function"==typeof Symbol&&"symbol"==s(Symbol.iterator)?function(t){return"undefined"==typeof t?"undefined":s(t)}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol?"symbol":"undefined"==typeof t?"undefined":s(t)};e.subscribeToState=r,e.setState=o,e.registerAction=i,e.createAction=u,e.bindAction=l;var a=n(2),f=new Map,d=new a.Subject,p={},h={subscribeToState:r,setState:o,registerAction:i,createAction:u,bindAction:l};e["default"]=h},function(e,n){e.exports=t}])})}).call(e,n(3)(t))},function(t,e){"use strict";t.exports=function(t){return t.webpackPolyfill||(t.deprecate=function(){},t.paths=[],t.children=[],t.webpackPolyfill=1),t}},function(t,e,n){"use strict";var r=function(t,e){function n(){this.constructor=t}for(var r in e)e.hasOwnProperty(r)&&(t[r]=e[r]);t.prototype=null===e?Object.create(e):(n.prototype=e.prototype,new n)},o=n(5),i=n(8),s=n(10),u=n(20),l=n(16),c=n(21),a=n(22),f=function(t){function e(e,n){t.call(this),this.destination=e,this.source=n,this.observers=[],this.isUnsubscribed=!1,this.isStopped=!1,this.hasErrored=!1,this.dispatching=!1,this.hasCompleted=!1,this.source=n}return r(e,t),e.prototype.lift=function(t){var n=new e(this.destination||this,this);return n.operator=t,n},e.prototype.add=function(t){return s.Subscription.prototype.add.call(this,t)},e.prototype.remove=function(t){s.Subscription.prototype.remove.call(this,t)},e.prototype.unsubscribe=function(){s.Subscription.prototype.unsubscribe.call(this)},e.prototype._subscribe=function(t){if(this.source)return this.source.subscribe(t);if(!t.isUnsubscribed){if(this.hasErrored)return t.error(this.errorValue);if(this.hasCompleted)return t.complete();this.throwIfUnsubscribed();var e=new u.SubjectSubscription(this,t);return this.observers.push(t),e}},e.prototype._unsubscribe=function(){this.source=null,this.isStopped=!0,this.observers=null,this.destination=null},e.prototype.next=function(t){this.throwIfUnsubscribed(),this.isStopped||(this.dispatching=!0,this._next(t),this.dispatching=!1,this.hasErrored?this._error(this.errorValue):this.hasCompleted&&this._complete())},e.prototype.error=function(t){this.throwIfUnsubscribed(),this.isStopped||(this.isStopped=!0,this.hasErrored=!0,this.errorValue=t,this.dispatching||this._error(t))},e.prototype.complete=function(){this.throwIfUnsubscribed(),this.isStopped||(this.isStopped=!0,this.hasCompleted=!0,this.dispatching||this._complete())},e.prototype.asObservable=function(){var t=new d(this);return t},e.prototype._next=function(t){this.destination?this.destination.next(t):this._finalNext(t)},e.prototype._finalNext=function(t){for(var e=-1,n=this.observers.slice(0),r=n.length;++e<r;)n[e].next(t)},e.prototype._error=function(t){this.destination?this.destination.error(t):this._finalError(t)},e.prototype._finalError=function(t){var e=-1,n=this.observers;if(this.observers=null,this.isUnsubscribed=!0,n)for(var r=n.length;++e<r;)n[e].error(t);this.isUnsubscribed=!1,this.unsubscribe()},e.prototype._complete=function(){this.destination?this.destination.complete():this._finalComplete()},e.prototype._finalComplete=function(){var t=-1,e=this.observers;if(this.observers=null,this.isUnsubscribed=!0,e)for(var n=e.length;++t<n;)e[t].complete();this.isUnsubscribed=!1,this.unsubscribe()},e.prototype.throwIfUnsubscribed=function(){this.isUnsubscribed&&c.throwError(new a.ObjectUnsubscribedError)},e.prototype[l.$$rxSubscriber]=function(){return new i.Subscriber(this)},e.create=function(t,n){return new e(t,n)},e}(o.Observable);e.Subject=f;var d=function(t){function e(e){t.call(this),this.source=e}return r(e,t),e}(o.Observable)},function(t,e,n){"use strict";var r=n(6),o=n(7),i=n(18),s=function(){function t(t){this._isScalar=!1,t&&(this._subscribe=t)}return t.prototype.lift=function(e){var n=new t;return n.source=this,n.operator=e,n},t.prototype.subscribe=function(t,e,n){var r=this.operator,i=o.toSubscriber(t,e,n);if(i.add(r?r.call(i,this):this._subscribe(i)),i.syncErrorThrowable&&(i.syncErrorThrowable=!1,i.syncErrorThrown))throw i.syncErrorValue;return i},t.prototype.forEach=function(t,e){var n=this;if(e||(r.root.Rx&&r.root.Rx.config&&r.root.Rx.config.Promise?e=r.root.Rx.config.Promise:r.root.Promise&&(e=r.root.Promise)),!e)throw new Error("no Promise impl found");return new e(function(e,r){var o=n.subscribe(function(e){if(o)try{t(e)}catch(n){r(n),o.unsubscribe()}else t(e)},r,e)})},t.prototype._subscribe=function(t){return this.source.subscribe(t)},t.prototype[i]=function(){return this},t.create=function(e){return new t(e)},t}();e.Observable=s},function(t,e,n){(function(t,n){"use strict";var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol?"symbol":typeof t},o={"boolean":!1,"function":!0,object:!0,number:!1,string:!1,undefined:!1};e.root=o["undefined"==typeof self?"undefined":r(self)]&&self||o["undefined"==typeof window?"undefined":r(window)]&&window;var i=(o[r(e)]&&e&&!e.nodeType&&e,o[r(t)]&&t&&!t.nodeType&&t,o["undefined"==typeof n?"undefined":r(n)]&&n);!i||i.global!==i&&i.window!==i||(e.root=i)}).call(e,n(3)(t),function(){return this}())},function(t,e,n){"use strict";function r(t,e,n){if(t&&"object"===("undefined"==typeof t?"undefined":o(t))){if(t instanceof i.Subscriber)return t;if("function"==typeof t[s.$$rxSubscriber])return t[s.$$rxSubscriber]()}return new i.Subscriber(t,e,n)}var o="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol?"symbol":typeof t},i=n(8),s=n(16);e.toSubscriber=r},function(t,e,n){"use strict";var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol?"symbol":typeof t},o=function(t,e){function n(){this.constructor=t}for(var r in e)e.hasOwnProperty(r)&&(t[r]=e[r]);t.prototype=null===e?Object.create(e):(n.prototype=e.prototype,new n)},i=n(9),s=n(10),u=n(16),l=n(17),c=function(t){function e(n,o,i){switch(t.call(this),this.syncErrorValue=null,this.syncErrorThrown=!1,this.syncErrorThrowable=!1,this.isStopped=!1,arguments.length){case 0:this.destination=l.empty;break;case 1:if(!n){this.destination=l.empty;break}if("object"===("undefined"==typeof n?"undefined":r(n))){n instanceof e?(this.destination=n,this.destination.add(this)):(this.syncErrorThrowable=!0,this.destination=new a(this,n));break}default:this.syncErrorThrowable=!0,this.destination=new a(this,n,o,i)}}return o(e,t),e.create=function(t,n,r){var o=new e(t,n,r);return o.syncErrorThrowable=!1,o},e.prototype.next=function(t){this.isStopped||this._next(t)},e.prototype.error=function(t){this.isStopped||(this.isStopped=!0,this._error(t))},e.prototype.complete=function(){this.isStopped||(this.isStopped=!0,this._complete())},e.prototype.unsubscribe=function(){this.isUnsubscribed||(this.isStopped=!0,t.prototype.unsubscribe.call(this))},e.prototype._next=function(t){this.destination.next(t)},e.prototype._error=function(t){this.destination.error(t),this.unsubscribe()},e.prototype._complete=function(){this.destination.complete(),this.unsubscribe()},e.prototype[u.$$rxSubscriber]=function(){return this},e}(s.Subscription);e.Subscriber=c;var a=function(t){function e(e,n,r,o){t.call(this),this._parent=e;var s,u=this;i.isFunction(n)?s=n:n&&(u=n,s=n.next,r=n.error,o=n.complete,i.isFunction(u.unsubscribe)&&this.add(u.unsubscribe.bind(u)),u.unsubscribe=this.unsubscribe.bind(this)),this._context=u,this._next=s,this._error=r,this._complete=o}return o(e,t),e.prototype.next=function(t){if(!this.isStopped&&this._next){var e=this._parent;e.syncErrorThrowable?this.__tryOrSetError(e,this._next,t)&&this.unsubscribe():this.__tryOrUnsub(this._next,t)}},e.prototype.error=function(t){if(!this.isStopped){var e=this._parent;if(this._error)e.syncErrorThrowable?(this.__tryOrSetError(e,this._error,t),this.unsubscribe()):(this.__tryOrUnsub(this._error,t),this.unsubscribe());else{if(!e.syncErrorThrowable)throw this.unsubscribe(),t;e.syncErrorValue=t,e.syncErrorThrown=!0,this.unsubscribe()}}},e.prototype.complete=function(){if(!this.isStopped){var t=this._parent;this._complete?t.syncErrorThrowable?(this.__tryOrSetError(t,this._complete),this.unsubscribe()):(this.__tryOrUnsub(this._complete),this.unsubscribe()):this.unsubscribe()}},e.prototype.__tryOrUnsub=function(t,e){try{t.call(this._context,e)}catch(n){throw this.unsubscribe(),n}},e.prototype.__tryOrSetError=function(t,e,n){try{e.call(this._context,n)}catch(r){return t.syncErrorValue=r,t.syncErrorThrown=!0,!0}return!1},e.prototype._unsubscribe=function(){var t=this._parent;this._context=null,this._parent=null,t.unsubscribe()},e}(c)},function(t,e){"use strict";function n(t){return"function"==typeof t}e.isFunction=n},function(t,e,n){"use strict";var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol?"symbol":typeof t},o=n(11),i=n(12),s=n(9),u=n(13),l=n(14),c=n(15),a=function(){function t(t){this.isUnsubscribed=!1,t&&(this._unsubscribe=t)}return t.prototype.unsubscribe=function(){var t,e=!1;if(!this.isUnsubscribed){this.isUnsubscribed=!0;var n=this,r=n._unsubscribe,a=n._subscriptions;if(this._subscriptions=null,s.isFunction(r)){var f=u.tryCatch(r).call(this);f===l.errorObject&&(e=!0,(t=t||[]).push(l.errorObject.e))}if(o.isArray(a))for(var d=-1,p=a.length;++d<p;){var h=a[d];if(i.isObject(h)){var f=u.tryCatch(h.unsubscribe).call(h);if(f===l.errorObject){e=!0,t=t||[];var b=l.errorObject.e;b instanceof c.UnsubscriptionError?t=t.concat(b.errors):t.push(b)}}}if(e)throw new c.UnsubscriptionError(t)}},t.prototype.add=function(e){if(e&&e!==this&&e!==t.EMPTY){var n=e;switch("undefined"==typeof e?"undefined":r(e)){case"function":n=new t(e);case"object":if(n.isUnsubscribed||"function"!=typeof n.unsubscribe)break;this.isUnsubscribed?n.unsubscribe():(this._subscriptions||(this._subscriptions=[])).push(n);break;default:throw new Error("Unrecognized teardown "+e+" added to Subscription.")}return n}},t.prototype.remove=function(e){if(null!=e&&e!==this&&e!==t.EMPTY){var n=this._subscriptions;if(n){var r=n.indexOf(e);-1!==r&&n.splice(r,1)}}},t.EMPTY=function(t){return t.isUnsubscribed=!0,t}(new t),t}();e.Subscription=a},function(t,e){"use strict";e.isArray=Array.isArray||function(t){return t&&"number"==typeof t.length}},function(t,e){"use strict";function n(t){return null!=t&&"object"===("undefined"==typeof t?"undefined":r(t))}var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol?"symbol":typeof t};e.isObject=n},function(t,e,n){"use strict";function r(){try{return i.apply(this,arguments)}catch(t){return s.errorObject.e=t,s.errorObject}}function o(t){return i=t,r}var i,s=n(14);e.tryCatch=o},function(t,e){"use strict";e.errorObject={e:{}}},function(t,e){"use strict";var n=function(t,e){function n(){this.constructor=t}for(var r in e)e.hasOwnProperty(r)&&(t[r]=e[r]);t.prototype=null===e?Object.create(e):(n.prototype=e.prototype,new n)},r=function(t){function e(e){t.call(this),this.errors=e,this.name="UnsubscriptionError",this.message=e?e.length+" errors occurred during unsubscription:\n"+e.map(function(t,e){return e+1+") "+t.toString()}).join("\n"):""}return n(e,t),e}(Error);e.UnsubscriptionError=r},function(t,e,n){"use strict";var r=n(6),o=r.root.Symbol;e.$$rxSubscriber="function"==typeof o&&"function"==typeof o["for"]?o["for"]("rxSubscriber"):"@@rxSubscriber"},function(t,e){"use strict";e.empty={isUnsubscribed:!0,next:function(t){},error:function(t){throw t},complete:function(){}}},function(t,e,n){(function(e){"use strict";t.exports=n(19)(e||window||void 0)}).call(e,function(){return this}())},function(t,e){"use strict";t.exports=function(t){var e,n=t.Symbol;return"function"==typeof n?n.observable?e=n.observable:(e=n("observable"),n.observable=e):e="@@observable",e}},function(t,e,n){"use strict";var r=function(t,e){function n(){this.constructor=t}for(var r in e)e.hasOwnProperty(r)&&(t[r]=e[r]);t.prototype=null===e?Object.create(e):(n.prototype=e.prototype,new n)},o=n(10),i=function(t){function e(e,n){t.call(this),this.subject=e,this.observer=n,this.isUnsubscribed=!1}return r(e,t),e.prototype.unsubscribe=function(){if(!this.isUnsubscribed){this.isUnsubscribed=!0;var t=this.subject,e=t.observers;if(this.subject=null,e&&0!==e.length&&!t.isUnsubscribed){var n=e.indexOf(this.observer);-1!==n&&e.splice(n,1)}}},e}(o.Subscription);e.SubjectSubscription=i},function(t,e){"use strict";function n(t){throw t}e.throwError=n},function(t,e){"use strict";var n=function(t,e){function n(){this.constructor=t}for(var r in e)e.hasOwnProperty(r)&&(t[r]=e[r]);t.prototype=null===e?Object.create(e):(n.prototype=e.prototype,new n)},r=function(t){function e(){t.call(this,"object unsubscribed"),this.name="ObjectUnsubscribedError"}return n(e,t),e}(Error);e.ObjectUnsubscribedError=r},function(t,e,n){"use strict";t.exports=n(24)},function(t,e,n){var r,o,i="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol?"symbol":typeof t};/*!
-	 * inferno-create-element v0.7.6
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(1);
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _index = __webpack_require__(2);
+
+	var _index2 = _interopRequireDefault(_index);
+
+	var _infernoCreateElement = __webpack_require__(23);
+
+	var _infernoCreateElement2 = _interopRequireDefault(_infernoCreateElement);
+
+	var _infernoDom = __webpack_require__(25);
+
+	var _infernoDom2 = _interopRequireDefault(_infernoDom);
+
+	var _actions = __webpack_require__(27);
+
+	var _components = __webpack_require__(28);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	(0, _actions.registerActions)();
+
+	_index2.default.subscribeToState(function (state) {
+	  console.log(state);
+	  _infernoDom2.default.render((0, _infernoCreateElement2.default)(_components.app, state), document.getElementById('app'));
+	}, function (error) {
+	  console.error(error);
+	});
+
+	_index2.default.setState({
+	  title: 'Todo list',
+	  todos: []
+	});
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {"use strict";
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	!function (e, t) {
+	  "object" == ( false ? "undefined" : _typeof(exports)) && "object" == ( false ? "undefined" : _typeof(module)) ? module.exports = t(__webpack_require__(4)) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (t), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "object" == (typeof exports === "undefined" ? "undefined" : _typeof(exports)) ? exports.mini = t(require("rxjs/Subject")) : e.mini = t(e["rxjs/Subject"]);
+	}(undefined, function (e) {
+	  return function (e) {
+	    function t(n) {
+	      if (o[n]) return o[n].exports;var r = o[n] = { exports: {}, id: n, loaded: !1 };return e[n].call(r.exports, r, r.exports, t), r.loaded = !0, r.exports;
+	    }var o = {};return t.m = e, t.c = o, t.p = "", t(0);
+	  }([function (e, t, o) {
+	    e.exports = o(1);
+	  }, function (e, t, o) {
+	    "use strict";
+	    function n(e, t) {
+	      return d.subscribe(e, t);
+	    }function r(e) {
+	      return "object" !== ("undefined" == typeof e ? "undefined" : s(e)) ? void console.error("State must be an object") : (p = e, void d.next(p));
+	    }function i(e, t) {
+	      return "string" != typeof e ? void console.error("Action type must be a string") : "function" != typeof t ? void console.error("Action reducer must be a function") : a.has(e) ? void console.error("Action of type " + e + " is already registered") : void a.set(e, t);
+	    }function c(e, t) {
+	      return new Promise(function (o, n) {
+	        if (!a.has(e)) return console.error("No action of type " + e), void n();var r = a.get(e)(p, t);void 0 !== r && (p = Object.assign({}, p, r), d.next(p)), o();
+	      });
+	    }function u() {
+	      for (var e = arguments.length, t = Array(e), o = 0; e > o; o++) {
+	        t[o] = arguments[o];
+	      }return c.bind.apply(c, [null].concat(t));
+	    }Object.defineProperty(t, "__esModule", { value: !0 });var s = "function" == typeof Symbol && "symbol" == _typeof(Symbol.iterator) ? function (e) {
+	      return typeof e === "undefined" ? "undefined" : _typeof(e);
+	    } : function (e) {
+	      return e && "function" == typeof Symbol && e.constructor === Symbol ? "symbol" : typeof e === "undefined" ? "undefined" : _typeof(e);
+	    };t.subscribeToState = n, t.setState = r, t.registerAction = i, t.createAction = c, t.bindAction = u;var f = o(2),
+	        a = new Map(),
+	        d = new f.Subject(),
+	        p = {},
+	        b = { subscribeToState: n, setState: r, registerAction: i, createAction: c, bindAction: u };t["default"] = b;
+	  }, function (t, o) {
+	    t.exports = e;
+	  }]);
+	});
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)(module)))
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = function (module) {
+		if (!module.webpackPolyfill) {
+			module.deprecate = function () {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	};
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var __extends = undefined && undefined.__extends || function (d, b) {
+	    for (var p in b) {
+	        if (b.hasOwnProperty(p)) d[p] = b[p];
+	    }function __() {
+	        this.constructor = d;
+	    }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var Observable_1 = __webpack_require__(5);
+	var Subscriber_1 = __webpack_require__(8);
+	var Subscription_1 = __webpack_require__(10);
+	var SubjectSubscription_1 = __webpack_require__(20);
+	var rxSubscriber_1 = __webpack_require__(16);
+	var throwError_1 = __webpack_require__(21);
+	var ObjectUnsubscribedError_1 = __webpack_require__(22);
+	/**
+	 * @class Subject<T>
+	 */
+	var Subject = function (_super) {
+	    __extends(Subject, _super);
+	    function Subject(destination, source) {
+	        _super.call(this);
+	        this.destination = destination;
+	        this.source = source;
+	        this.observers = [];
+	        this.isUnsubscribed = false;
+	        this.isStopped = false;
+	        this.hasErrored = false;
+	        this.dispatching = false;
+	        this.hasCompleted = false;
+	        this.source = source;
+	    }
+	    Subject.prototype.lift = function (operator) {
+	        var subject = new Subject(this.destination || this, this);
+	        subject.operator = operator;
+	        return subject;
+	    };
+	    Subject.prototype.add = function (subscription) {
+	        return Subscription_1.Subscription.prototype.add.call(this, subscription);
+	    };
+	    Subject.prototype.remove = function (subscription) {
+	        Subscription_1.Subscription.prototype.remove.call(this, subscription);
+	    };
+	    Subject.prototype.unsubscribe = function () {
+	        Subscription_1.Subscription.prototype.unsubscribe.call(this);
+	    };
+	    Subject.prototype._subscribe = function (subscriber) {
+	        if (this.source) {
+	            return this.source.subscribe(subscriber);
+	        } else {
+	            if (subscriber.isUnsubscribed) {
+	                return;
+	            } else if (this.hasErrored) {
+	                return subscriber.error(this.errorValue);
+	            } else if (this.hasCompleted) {
+	                return subscriber.complete();
+	            }
+	            this.throwIfUnsubscribed();
+	            var subscription = new SubjectSubscription_1.SubjectSubscription(this, subscriber);
+	            this.observers.push(subscriber);
+	            return subscription;
+	        }
+	    };
+	    Subject.prototype._unsubscribe = function () {
+	        this.source = null;
+	        this.isStopped = true;
+	        this.observers = null;
+	        this.destination = null;
+	    };
+	    Subject.prototype.next = function (value) {
+	        this.throwIfUnsubscribed();
+	        if (this.isStopped) {
+	            return;
+	        }
+	        this.dispatching = true;
+	        this._next(value);
+	        this.dispatching = false;
+	        if (this.hasErrored) {
+	            this._error(this.errorValue);
+	        } else if (this.hasCompleted) {
+	            this._complete();
+	        }
+	    };
+	    Subject.prototype.error = function (err) {
+	        this.throwIfUnsubscribed();
+	        if (this.isStopped) {
+	            return;
+	        }
+	        this.isStopped = true;
+	        this.hasErrored = true;
+	        this.errorValue = err;
+	        if (this.dispatching) {
+	            return;
+	        }
+	        this._error(err);
+	    };
+	    Subject.prototype.complete = function () {
+	        this.throwIfUnsubscribed();
+	        if (this.isStopped) {
+	            return;
+	        }
+	        this.isStopped = true;
+	        this.hasCompleted = true;
+	        if (this.dispatching) {
+	            return;
+	        }
+	        this._complete();
+	    };
+	    Subject.prototype.asObservable = function () {
+	        var observable = new SubjectObservable(this);
+	        return observable;
+	    };
+	    Subject.prototype._next = function (value) {
+	        if (this.destination) {
+	            this.destination.next(value);
+	        } else {
+	            this._finalNext(value);
+	        }
+	    };
+	    Subject.prototype._finalNext = function (value) {
+	        var index = -1;
+	        var observers = this.observers.slice(0);
+	        var len = observers.length;
+	        while (++index < len) {
+	            observers[index].next(value);
+	        }
+	    };
+	    Subject.prototype._error = function (err) {
+	        if (this.destination) {
+	            this.destination.error(err);
+	        } else {
+	            this._finalError(err);
+	        }
+	    };
+	    Subject.prototype._finalError = function (err) {
+	        var index = -1;
+	        var observers = this.observers;
+	        // optimization to block our SubjectSubscriptions from
+	        // splicing themselves out of the observers list one by one.
+	        this.observers = null;
+	        this.isUnsubscribed = true;
+	        if (observers) {
+	            var len = observers.length;
+	            while (++index < len) {
+	                observers[index].error(err);
+	            }
+	        }
+	        this.isUnsubscribed = false;
+	        this.unsubscribe();
+	    };
+	    Subject.prototype._complete = function () {
+	        if (this.destination) {
+	            this.destination.complete();
+	        } else {
+	            this._finalComplete();
+	        }
+	    };
+	    Subject.prototype._finalComplete = function () {
+	        var index = -1;
+	        var observers = this.observers;
+	        // optimization to block our SubjectSubscriptions from
+	        // splicing themselves out of the observers list one by one.
+	        this.observers = null;
+	        this.isUnsubscribed = true;
+	        if (observers) {
+	            var len = observers.length;
+	            while (++index < len) {
+	                observers[index].complete();
+	            }
+	        }
+	        this.isUnsubscribed = false;
+	        this.unsubscribe();
+	    };
+	    Subject.prototype.throwIfUnsubscribed = function () {
+	        if (this.isUnsubscribed) {
+	            throwError_1.throwError(new ObjectUnsubscribedError_1.ObjectUnsubscribedError());
+	        }
+	    };
+	    Subject.prototype[rxSubscriber_1.$$rxSubscriber] = function () {
+	        return new Subscriber_1.Subscriber(this);
+	    };
+	    Subject.create = function (destination, source) {
+	        return new Subject(destination, source);
+	    };
+	    return Subject;
+	}(Observable_1.Observable);
+	exports.Subject = Subject;
+	/**
+	 * We need this JSDoc comment for affecting ESDoc.
+	 * @ignore
+	 * @extends {Ignored}
+	 */
+	var SubjectObservable = function (_super) {
+	    __extends(SubjectObservable, _super);
+	    function SubjectObservable(source) {
+	        _super.call(this);
+	        this.source = source;
+	    }
+	    return SubjectObservable;
+	}(Observable_1.Observable);
+	//# sourceMappingURL=Subject.js.map
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var root_1 = __webpack_require__(6);
+	var toSubscriber_1 = __webpack_require__(7);
+	var $$observable = __webpack_require__(18);
+	/**
+	 * A representation of any set of values over any amount of time. This the most basic building block
+	 * of RxJS.
+	 *
+	 * @class Observable<T>
+	 */
+	var Observable = function () {
+	    /**
+	     * @constructor
+	     * @param {Function} subscribe the function that is  called when the Observable is
+	     * initially subscribed to. This function is given a Subscriber, to which new values
+	     * can be `next`ed, or an `error` method can be called to raise an error, or
+	     * `complete` can be called to notify of a successful completion.
+	     */
+	    function Observable(subscribe) {
+	        this._isScalar = false;
+	        if (subscribe) {
+	            this._subscribe = subscribe;
+	        }
+	    }
+	    /**
+	     * Creates a new Observable, with this Observable as the source, and the passed
+	     * operator defined as the new observable's operator.
+	     * @method lift
+	     * @param {Operator} operator the operator defining the operation to take on the observable
+	     * @return {Observable} a new observable with the Operator applied
+	     */
+	    Observable.prototype.lift = function (operator) {
+	        var observable = new Observable();
+	        observable.source = this;
+	        observable.operator = operator;
+	        return observable;
+	    };
+	    /**
+	     * Registers handlers for handling emitted values, error and completions from the observable, and
+	     *  executes the observable's subscriber function, which will take action to set up the underlying data stream
+	     * @method subscribe
+	     * @param {PartialObserver|Function} observerOrNext (optional) either an observer defining all functions to be called,
+	     *  or the first of three possible handlers, which is the handler for each value emitted from the observable.
+	     * @param {Function} error (optional) a handler for a terminal event resulting from an error. If no error handler is provided,
+	     *  the error will be thrown as unhandled
+	     * @param {Function} complete (optional) a handler for a terminal event resulting from successful completion.
+	     * @return {ISubscription} a subscription reference to the registered handlers
+	     */
+	    Observable.prototype.subscribe = function (observerOrNext, error, complete) {
+	        var operator = this.operator;
+	        var sink = toSubscriber_1.toSubscriber(observerOrNext, error, complete);
+	        sink.add(operator ? operator.call(sink, this) : this._subscribe(sink));
+	        if (sink.syncErrorThrowable) {
+	            sink.syncErrorThrowable = false;
+	            if (sink.syncErrorThrown) {
+	                throw sink.syncErrorValue;
+	            }
+	        }
+	        return sink;
+	    };
+	    /**
+	     * @method forEach
+	     * @param {Function} next a handler for each value emitted by the observable
+	     * @param {PromiseConstructor} [PromiseCtor] a constructor function used to instantiate the Promise
+	     * @return {Promise} a promise that either resolves on observable completion or
+	     *  rejects with the handled error
+	     */
+	    Observable.prototype.forEach = function (next, PromiseCtor) {
+	        var _this = this;
+	        if (!PromiseCtor) {
+	            if (root_1.root.Rx && root_1.root.Rx.config && root_1.root.Rx.config.Promise) {
+	                PromiseCtor = root_1.root.Rx.config.Promise;
+	            } else if (root_1.root.Promise) {
+	                PromiseCtor = root_1.root.Promise;
+	            }
+	        }
+	        if (!PromiseCtor) {
+	            throw new Error('no Promise impl found');
+	        }
+	        return new PromiseCtor(function (resolve, reject) {
+	            var subscription = _this.subscribe(function (value) {
+	                if (subscription) {
+	                    // if there is a subscription, then we can surmise
+	                    // the next handling is asynchronous. Any errors thrown
+	                    // need to be rejected explicitly and unsubscribe must be
+	                    // called manually
+	                    try {
+	                        next(value);
+	                    } catch (err) {
+	                        reject(err);
+	                        subscription.unsubscribe();
+	                    }
+	                } else {
+	                    // if there is NO subscription, then we're getting a nexted
+	                    // value synchronously during subscription. We can just call it.
+	                    // If it errors, Observable's `subscribe` imple will ensure the
+	                    // unsubscription logic is called, then synchronously rethrow the error.
+	                    // After that, Promise will trap the error and send it
+	                    // down the rejection path.
+	                    next(value);
+	                }
+	            }, reject, resolve);
+	        });
+	    };
+	    Observable.prototype._subscribe = function (subscriber) {
+	        return this.source.subscribe(subscriber);
+	    };
+	    /**
+	     * An interop point defined by the es7-observable spec https://github.com/zenparsing/es-observable
+	     * @method Symbol.observable
+	     * @return {Observable} this instance of the observable
+	     */
+	    Observable.prototype[$$observable] = function () {
+	        return this;
+	    };
+	    // HACK: Since TypeScript inherits static properties too, we have to
+	    // fight against TypeScript here so Subject can have a different static create signature
+	    /**
+	     * Creates a new cold Observable by calling the Observable constructor
+	     * @static true
+	     * @owner Observable
+	     * @method create
+	     * @param {Function} subscribe? the subscriber function to be passed to the Observable constructor
+	     * @return {Observable} a new cold observable
+	     */
+	    Observable.create = function (subscribe) {
+	        return new Observable(subscribe);
+	    };
+	    return Observable;
+	}();
+	exports.Observable = Observable;
+	//# sourceMappingURL=Observable.js.map
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module, global) {"use strict";
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var objectTypes = {
+	    'boolean': false,
+	    'function': true,
+	    'object': true,
+	    'number': false,
+	    'string': false,
+	    'undefined': false
+	};
+	exports.root = objectTypes[typeof self === 'undefined' ? 'undefined' : _typeof(self)] && self || objectTypes[typeof window === 'undefined' ? 'undefined' : _typeof(window)] && window;
+	/* tslint:disable:no-unused-variable */
+	var freeExports = objectTypes[ false ? 'undefined' : _typeof(exports)] && exports && !exports.nodeType && exports;
+	var freeModule = objectTypes[ false ? 'undefined' : _typeof(module)] && module && !module.nodeType && module;
+	var freeGlobal = objectTypes[typeof global === 'undefined' ? 'undefined' : _typeof(global)] && global;
+	if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal)) {
+	    exports.root = freeGlobal;
+	}
+	//# sourceMappingURL=root.js.map
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)(module), (function() { return this; }())))
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var Subscriber_1 = __webpack_require__(8);
+	var rxSubscriber_1 = __webpack_require__(16);
+	function toSubscriber(nextOrObserver, error, complete) {
+	    if (nextOrObserver && (typeof nextOrObserver === 'undefined' ? 'undefined' : _typeof(nextOrObserver)) === 'object') {
+	        if (nextOrObserver instanceof Subscriber_1.Subscriber) {
+	            return nextOrObserver;
+	        } else if (typeof nextOrObserver[rxSubscriber_1.$$rxSubscriber] === 'function') {
+	            return nextOrObserver[rxSubscriber_1.$$rxSubscriber]();
+	        }
+	    }
+	    return new Subscriber_1.Subscriber(nextOrObserver, error, complete);
+	}
+	exports.toSubscriber = toSubscriber;
+	//# sourceMappingURL=toSubscriber.js.map
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var __extends = undefined && undefined.__extends || function (d, b) {
+	    for (var p in b) {
+	        if (b.hasOwnProperty(p)) d[p] = b[p];
+	    }function __() {
+	        this.constructor = d;
+	    }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var isFunction_1 = __webpack_require__(9);
+	var Subscription_1 = __webpack_require__(10);
+	var rxSubscriber_1 = __webpack_require__(16);
+	var Observer_1 = __webpack_require__(17);
+	/**
+	 * Implements the {@link Observer} interface and extends the
+	 * {@link Subscription} class. While the {@link Observer} is the public API for
+	 * consuming the values of an {@link Observable}, all Observers get converted to
+	 * a Subscriber, in order to provide Subscription-like capabilities such as
+	 * `unsubscribe`. Subscriber is a common type in RxJS, and crucial for
+	 * implementing operators, but it is rarely used as a public API.
+	 *
+	 * @class Subscriber<T>
+	 */
+	var Subscriber = function (_super) {
+	    __extends(Subscriber, _super);
+	    /**
+	     * @param {Observer|function(value: T): void} [destinationOrNext] A partially
+	     * defined Observer or a `next` callback function.
+	     * @param {function(e: ?any): void} [error] The `error` callback of an
+	     * Observer.
+	     * @param {function(): void} [complete] The `complete` callback of an
+	     * Observer.
+	     */
+	    function Subscriber(destinationOrNext, error, complete) {
+	        _super.call(this);
+	        this.syncErrorValue = null;
+	        this.syncErrorThrown = false;
+	        this.syncErrorThrowable = false;
+	        this.isStopped = false;
+	        switch (arguments.length) {
+	            case 0:
+	                this.destination = Observer_1.empty;
+	                break;
+	            case 1:
+	                if (!destinationOrNext) {
+	                    this.destination = Observer_1.empty;
+	                    break;
+	                }
+	                if ((typeof destinationOrNext === 'undefined' ? 'undefined' : _typeof(destinationOrNext)) === 'object') {
+	                    if (destinationOrNext instanceof Subscriber) {
+	                        this.destination = destinationOrNext;
+	                        this.destination.add(this);
+	                    } else {
+	                        this.syncErrorThrowable = true;
+	                        this.destination = new SafeSubscriber(this, destinationOrNext);
+	                    }
+	                    break;
+	                }
+	            default:
+	                this.syncErrorThrowable = true;
+	                this.destination = new SafeSubscriber(this, destinationOrNext, error, complete);
+	                break;
+	        }
+	    }
+	    /**
+	     * A static factory for a Subscriber, given a (potentially partial) definition
+	     * of an Observer.
+	     * @param {function(x: ?T): void} [next] The `next` callback of an Observer.
+	     * @param {function(e: ?any): void} [error] The `error` callback of an
+	     * Observer.
+	     * @param {function(): void} [complete] The `complete` callback of an
+	     * Observer.
+	     * @return {Subscriber<T>} A Subscriber wrapping the (partially defined)
+	     * Observer represented by the given arguments.
+	     */
+	    Subscriber.create = function (next, error, complete) {
+	        var subscriber = new Subscriber(next, error, complete);
+	        subscriber.syncErrorThrowable = false;
+	        return subscriber;
+	    };
+	    /**
+	     * The {@link Observer} callback to receive notifications of type `next` from
+	     * the Observable, with a value. The Observable may call this method 0 or more
+	     * times.
+	     * @param {T} [value] The `next` value.
+	     * @return {void}
+	     */
+	    Subscriber.prototype.next = function (value) {
+	        if (!this.isStopped) {
+	            this._next(value);
+	        }
+	    };
+	    /**
+	     * The {@link Observer} callback to receive notifications of type `error` from
+	     * the Observable, with an attached {@link Error}. Notifies the Observer that
+	     * the Observable has experienced an error condition.
+	     * @param {any} [err] The `error` exception.
+	     * @return {void}
+	     */
+	    Subscriber.prototype.error = function (err) {
+	        if (!this.isStopped) {
+	            this.isStopped = true;
+	            this._error(err);
+	        }
+	    };
+	    /**
+	     * The {@link Observer} callback to receive a valueless notification of type
+	     * `complete` from the Observable. Notifies the Observer that the Observable
+	     * has finished sending push-based notifications.
+	     * @return {void}
+	     */
+	    Subscriber.prototype.complete = function () {
+	        if (!this.isStopped) {
+	            this.isStopped = true;
+	            this._complete();
+	        }
+	    };
+	    Subscriber.prototype.unsubscribe = function () {
+	        if (this.isUnsubscribed) {
+	            return;
+	        }
+	        this.isStopped = true;
+	        _super.prototype.unsubscribe.call(this);
+	    };
+	    Subscriber.prototype._next = function (value) {
+	        this.destination.next(value);
+	    };
+	    Subscriber.prototype._error = function (err) {
+	        this.destination.error(err);
+	        this.unsubscribe();
+	    };
+	    Subscriber.prototype._complete = function () {
+	        this.destination.complete();
+	        this.unsubscribe();
+	    };
+	    Subscriber.prototype[rxSubscriber_1.$$rxSubscriber] = function () {
+	        return this;
+	    };
+	    return Subscriber;
+	}(Subscription_1.Subscription);
+	exports.Subscriber = Subscriber;
+	/**
+	 * We need this JSDoc comment for affecting ESDoc.
+	 * @ignore
+	 * @extends {Ignored}
+	 */
+	var SafeSubscriber = function (_super) {
+	    __extends(SafeSubscriber, _super);
+	    function SafeSubscriber(_parent, observerOrNext, error, complete) {
+	        _super.call(this);
+	        this._parent = _parent;
+	        var next;
+	        var context = this;
+	        if (isFunction_1.isFunction(observerOrNext)) {
+	            next = observerOrNext;
+	        } else if (observerOrNext) {
+	            context = observerOrNext;
+	            next = observerOrNext.next;
+	            error = observerOrNext.error;
+	            complete = observerOrNext.complete;
+	            if (isFunction_1.isFunction(context.unsubscribe)) {
+	                this.add(context.unsubscribe.bind(context));
+	            }
+	            context.unsubscribe = this.unsubscribe.bind(this);
+	        }
+	        this._context = context;
+	        this._next = next;
+	        this._error = error;
+	        this._complete = complete;
+	    }
+	    SafeSubscriber.prototype.next = function (value) {
+	        if (!this.isStopped && this._next) {
+	            var _parent = this._parent;
+	            if (!_parent.syncErrorThrowable) {
+	                this.__tryOrUnsub(this._next, value);
+	            } else if (this.__tryOrSetError(_parent, this._next, value)) {
+	                this.unsubscribe();
+	            }
+	        }
+	    };
+	    SafeSubscriber.prototype.error = function (err) {
+	        if (!this.isStopped) {
+	            var _parent = this._parent;
+	            if (this._error) {
+	                if (!_parent.syncErrorThrowable) {
+	                    this.__tryOrUnsub(this._error, err);
+	                    this.unsubscribe();
+	                } else {
+	                    this.__tryOrSetError(_parent, this._error, err);
+	                    this.unsubscribe();
+	                }
+	            } else if (!_parent.syncErrorThrowable) {
+	                this.unsubscribe();
+	                throw err;
+	            } else {
+	                _parent.syncErrorValue = err;
+	                _parent.syncErrorThrown = true;
+	                this.unsubscribe();
+	            }
+	        }
+	    };
+	    SafeSubscriber.prototype.complete = function () {
+	        if (!this.isStopped) {
+	            var _parent = this._parent;
+	            if (this._complete) {
+	                if (!_parent.syncErrorThrowable) {
+	                    this.__tryOrUnsub(this._complete);
+	                    this.unsubscribe();
+	                } else {
+	                    this.__tryOrSetError(_parent, this._complete);
+	                    this.unsubscribe();
+	                }
+	            } else {
+	                this.unsubscribe();
+	            }
+	        }
+	    };
+	    SafeSubscriber.prototype.__tryOrUnsub = function (fn, value) {
+	        try {
+	            fn.call(this._context, value);
+	        } catch (err) {
+	            this.unsubscribe();
+	            throw err;
+	        }
+	    };
+	    SafeSubscriber.prototype.__tryOrSetError = function (parent, fn, value) {
+	        try {
+	            fn.call(this._context, value);
+	        } catch (err) {
+	            parent.syncErrorValue = err;
+	            parent.syncErrorThrown = true;
+	            return true;
+	        }
+	        return false;
+	    };
+	    SafeSubscriber.prototype._unsubscribe = function () {
+	        var _parent = this._parent;
+	        this._context = null;
+	        this._parent = null;
+	        _parent.unsubscribe();
+	    };
+	    return SafeSubscriber;
+	}(Subscriber);
+	//# sourceMappingURL=Subscriber.js.map
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	function isFunction(x) {
+	    return typeof x === 'function';
+	}
+	exports.isFunction = isFunction;
+	//# sourceMappingURL=isFunction.js.map
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var isArray_1 = __webpack_require__(11);
+	var isObject_1 = __webpack_require__(12);
+	var isFunction_1 = __webpack_require__(9);
+	var tryCatch_1 = __webpack_require__(13);
+	var errorObject_1 = __webpack_require__(14);
+	var UnsubscriptionError_1 = __webpack_require__(15);
+	/**
+	 * Represents a disposable resource, such as the execution of an Observable. A
+	 * Subscription has one important method, `unsubscribe`, that takes no argument
+	 * and just disposes the resource held by the subscription.
+	 *
+	 * Additionally, subscriptions may be grouped together through the `add()`
+	 * method, which will attach a child Subscription to the current Subscription.
+	 * When a Subscription is unsubscribed, all its children (and its grandchildren)
+	 * will be unsubscribed as well.
+	 *
+	 * @class Subscription
+	 */
+	var Subscription = function () {
+	    /**
+	     * @param {function(): void} [unsubscribe] A function describing how to
+	     * perform the disposal of resources when the `unsubscribe` method is called.
+	     */
+	    function Subscription(unsubscribe) {
+	        /**
+	         * A flag to indicate whether this Subscription has already been unsubscribed.
+	         * @type {boolean}
+	         */
+	        this.isUnsubscribed = false;
+	        if (unsubscribe) {
+	            this._unsubscribe = unsubscribe;
+	        }
+	    }
+	    /**
+	     * Disposes the resources held by the subscription. May, for instance, cancel
+	     * an ongoing Observable execution or cancel any other type of work that
+	     * started when the Subscription was created.
+	     * @return {void}
+	     */
+	    Subscription.prototype.unsubscribe = function () {
+	        var hasErrors = false;
+	        var errors;
+	        if (this.isUnsubscribed) {
+	            return;
+	        }
+	        this.isUnsubscribed = true;
+	        var _a = this,
+	            _unsubscribe = _a._unsubscribe,
+	            _subscriptions = _a._subscriptions;
+	        this._subscriptions = null;
+	        if (isFunction_1.isFunction(_unsubscribe)) {
+	            var trial = tryCatch_1.tryCatch(_unsubscribe).call(this);
+	            if (trial === errorObject_1.errorObject) {
+	                hasErrors = true;
+	                (errors = errors || []).push(errorObject_1.errorObject.e);
+	            }
+	        }
+	        if (isArray_1.isArray(_subscriptions)) {
+	            var index = -1;
+	            var len = _subscriptions.length;
+	            while (++index < len) {
+	                var sub = _subscriptions[index];
+	                if (isObject_1.isObject(sub)) {
+	                    var trial = tryCatch_1.tryCatch(sub.unsubscribe).call(sub);
+	                    if (trial === errorObject_1.errorObject) {
+	                        hasErrors = true;
+	                        errors = errors || [];
+	                        var err = errorObject_1.errorObject.e;
+	                        if (err instanceof UnsubscriptionError_1.UnsubscriptionError) {
+	                            errors = errors.concat(err.errors);
+	                        } else {
+	                            errors.push(err);
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	        if (hasErrors) {
+	            throw new UnsubscriptionError_1.UnsubscriptionError(errors);
+	        }
+	    };
+	    /**
+	     * Adds a tear down to be called during the unsubscribe() of this
+	     * Subscription.
+	     *
+	     * If the tear down being added is a subscription that is already
+	     * unsubscribed, is the same reference `add` is being called on, or is
+	     * `Subscription.EMPTY`, it will not be added.
+	     *
+	     * If this subscription is already in an `isUnsubscribed` state, the passed
+	     * tear down logic will be executed immediately.
+	     *
+	     * @param {TeardownLogic} teardown The additional logic to execute on
+	     * teardown.
+	     * @return {Subscription} Returns the Subscription used or created to be
+	     * added to the inner subscriptions list. This Subscription can be used with
+	     * `remove()` to remove the passed teardown logic from the inner subscriptions
+	     * list.
+	     */
+	    Subscription.prototype.add = function (teardown) {
+	        if (!teardown || teardown === this || teardown === Subscription.EMPTY) {
+	            return;
+	        }
+	        var sub = teardown;
+	        switch (typeof teardown === 'undefined' ? 'undefined' : _typeof(teardown)) {
+	            case 'function':
+	                sub = new Subscription(teardown);
+	            case 'object':
+	                if (sub.isUnsubscribed || typeof sub.unsubscribe !== 'function') {
+	                    break;
+	                } else if (this.isUnsubscribed) {
+	                    sub.unsubscribe();
+	                } else {
+	                    (this._subscriptions || (this._subscriptions = [])).push(sub);
+	                }
+	                break;
+	            default:
+	                throw new Error('Unrecognized teardown ' + teardown + ' added to Subscription.');
+	        }
+	        return sub;
+	    };
+	    /**
+	     * Removes a Subscription from the internal list of subscriptions that will
+	     * unsubscribe during the unsubscribe process of this Subscription.
+	     * @param {Subscription} subscription The subscription to remove.
+	     * @return {void}
+	     */
+	    Subscription.prototype.remove = function (subscription) {
+	        // HACK: This might be redundant because of the logic in `add()`
+	        if (subscription == null || subscription === this || subscription === Subscription.EMPTY) {
+	            return;
+	        }
+	        var subscriptions = this._subscriptions;
+	        if (subscriptions) {
+	            var subscriptionIndex = subscriptions.indexOf(subscription);
+	            if (subscriptionIndex !== -1) {
+	                subscriptions.splice(subscriptionIndex, 1);
+	            }
+	        }
+	    };
+	    Subscription.EMPTY = function (empty) {
+	        empty.isUnsubscribed = true;
+	        return empty;
+	    }(new Subscription());
+	    return Subscription;
+	}();
+	exports.Subscription = Subscription;
+	//# sourceMappingURL=Subscription.js.map
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	exports.isArray = Array.isArray || function (x) {
+	  return x && typeof x.length === 'number';
+	};
+	//# sourceMappingURL=isArray.js.map
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	function isObject(x) {
+	    return x != null && (typeof x === "undefined" ? "undefined" : _typeof(x)) === 'object';
+	}
+	exports.isObject = isObject;
+	//# sourceMappingURL=isObject.js.map
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var errorObject_1 = __webpack_require__(14);
+	var tryCatchTarget;
+	function tryCatcher() {
+	    try {
+	        return tryCatchTarget.apply(this, arguments);
+	    } catch (e) {
+	        errorObject_1.errorObject.e = e;
+	        return errorObject_1.errorObject;
+	    }
+	}
+	function tryCatch(fn) {
+	    tryCatchTarget = fn;
+	    return tryCatcher;
+	}
+	exports.tryCatch = tryCatch;
+	;
+	//# sourceMappingURL=tryCatch.js.map
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	"use strict";
+	// typeof any so that it we don't have to cast when comparing a result to the error object
+
+	exports.errorObject = { e: {} };
+	//# sourceMappingURL=errorObject.js.map
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var __extends = undefined && undefined.__extends || function (d, b) {
+	    for (var p in b) {
+	        if (b.hasOwnProperty(p)) d[p] = b[p];
+	    }function __() {
+	        this.constructor = d;
+	    }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	/**
+	 * An error thrown when one or more errors have occurred during the
+	 * `unsubscribe` of a {@link Subscription}.
+	 */
+	var UnsubscriptionError = function (_super) {
+	    __extends(UnsubscriptionError, _super);
+	    function UnsubscriptionError(errors) {
+	        _super.call(this);
+	        this.errors = errors;
+	        this.name = 'UnsubscriptionError';
+	        this.message = errors ? errors.length + " errors occurred during unsubscription:\n" + errors.map(function (err, i) {
+	            return i + 1 + ") " + err.toString();
+	        }).join('\n') : '';
+	    }
+	    return UnsubscriptionError;
+	}(Error);
+	exports.UnsubscriptionError = UnsubscriptionError;
+	//# sourceMappingURL=UnsubscriptionError.js.map
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var root_1 = __webpack_require__(6);
+	var _Symbol = root_1.root.Symbol;
+	exports.$$rxSubscriber = typeof _Symbol === 'function' && typeof _Symbol.for === 'function' ? _Symbol.for('rxSubscriber') : '@@rxSubscriber';
+	//# sourceMappingURL=rxSubscriber.js.map
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	exports.empty = {
+	    isUnsubscribed: true,
+	    next: function next(value) {},
+	    error: function error(err) {
+	        throw err;
+	    },
+	    complete: function complete() {}
+	};
+	//# sourceMappingURL=Observer.js.map
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/* global window */
+	'use strict';
+
+	module.exports = __webpack_require__(19)(global || window || undefined);
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = function symbolObservablePonyfill(root) {
+		var result;
+		var _Symbol = root.Symbol;
+
+		if (typeof _Symbol === 'function') {
+			if (_Symbol.observable) {
+				result = _Symbol.observable;
+			} else {
+				result = _Symbol('observable');
+				_Symbol.observable = result;
+			}
+		} else {
+			result = '@@observable';
+		}
+
+		return result;
+	};
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var __extends = undefined && undefined.__extends || function (d, b) {
+	    for (var p in b) {
+	        if (b.hasOwnProperty(p)) d[p] = b[p];
+	    }function __() {
+	        this.constructor = d;
+	    }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var Subscription_1 = __webpack_require__(10);
+	/**
+	 * We need this JSDoc comment for affecting ESDoc.
+	 * @ignore
+	 * @extends {Ignored}
+	 */
+	var SubjectSubscription = function (_super) {
+	    __extends(SubjectSubscription, _super);
+	    function SubjectSubscription(subject, observer) {
+	        _super.call(this);
+	        this.subject = subject;
+	        this.observer = observer;
+	        this.isUnsubscribed = false;
+	    }
+	    SubjectSubscription.prototype.unsubscribe = function () {
+	        if (this.isUnsubscribed) {
+	            return;
+	        }
+	        this.isUnsubscribed = true;
+	        var subject = this.subject;
+	        var observers = subject.observers;
+	        this.subject = null;
+	        if (!observers || observers.length === 0 || subject.isUnsubscribed) {
+	            return;
+	        }
+	        var subscriberIndex = observers.indexOf(this.observer);
+	        if (subscriberIndex !== -1) {
+	            observers.splice(subscriberIndex, 1);
+	        }
+	    };
+	    return SubjectSubscription;
+	}(Subscription_1.Subscription);
+	exports.SubjectSubscription = SubjectSubscription;
+	//# sourceMappingURL=SubjectSubscription.js.map
+
+/***/ },
+/* 21 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	function throwError(e) {
+	  throw e;
+	}
+	exports.throwError = throwError;
+	//# sourceMappingURL=throwError.js.map
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var __extends = undefined && undefined.__extends || function (d, b) {
+	    for (var p in b) {
+	        if (b.hasOwnProperty(p)) d[p] = b[p];
+	    }function __() {
+	        this.constructor = d;
+	    }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	/**
+	 * An error thrown when an action is invalid because the object has been
+	 * unsubscribed.
+	 *
+	 * @see {@link Subject}
+	 * @see {@link BehaviorSubject}
+	 *
+	 * @class ObjectUnsubscribedError
+	 */
+	var ObjectUnsubscribedError = function (_super) {
+	    __extends(ObjectUnsubscribedError, _super);
+	    function ObjectUnsubscribedError() {
+	        _super.call(this, 'object unsubscribed');
+	        this.name = 'ObjectUnsubscribedError';
+	    }
+	    return ObjectUnsubscribedError;
+	}(Error);
+	exports.ObjectUnsubscribedError = ObjectUnsubscribedError;
+	//# sourceMappingURL=ObjectUnsubscribedError.js.map
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = __webpack_require__(24);
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	/*!
+	 * inferno-create-element v0.7.7
 	 * (c) 2016 Dominic Gannaway
 	 * Released under the MPL-2.0 License.
 	 */
-!function(s,u){"object"===i(e)&&"undefined"!=typeof t?t.exports=u():(r=u,o="function"==typeof r?r.call(e,n,e,t):r,!(void 0!==o&&(t.exports=o)))}(void 0,function(){"use strict";function t(t){return t instanceof Array}function e(t){return void 0===t||null===t}function n(t){return null===t||t===!1||void 0===t}function r(t){return"function"==typeof t}function o(t){return"o"===t[0]&&"n"===t[1]&&t.length>3}function s(t){return"onCreated"===t||"onAttached"===t||"onWillDetach"===t||"onWillUpdate"===t||"onDidUpdate"===t}function u(t){return"onComponentWillMount"===t||"onComponentDidMount"===t||"onComponentWillUnmount"===t||"onComponentShouldUpdate"===t||"onComponentWillUpdate"===t||"onComponentDidUpdate"===t}function l(t){this.bp=t,this.dom=null,this.instance=null,this.tag=null,this.children=null,this.style=null,this.className=null,this.attrs=null,this.events=null,this.hooks=null,this.key=null,this.clipData=null}function c(t){return new l(t)}function a(n,i){var l=null,c=null,a=null,f=null,d=null;if(!e(n)){if(t(n))return n;for(var p in n)"className"===p?f=n[p]:"style"===p?d=n[p]:s(p)&&!r(i)?(e(c)&&(c={}),c[p.substring(2).toLowerCase()]=n[p],delete n[p]):o(p)&&!r(i)?(e(l)&&(l={}),l[p.toLowerCase()]=n[p],delete n[p]):u(p)&&r(i)?(e(c)&&(c={}),c["c"+p.substring(3)]=n[p],delete n[p]):r(i)?a=n:(e(a)&&(a={}),a[p]=n[p])}return{attrs:a,events:l,className:f,style:d,hooks:c}}function f(r){var o=r.tag,i=r.attrs,s=r.children,u=r.className,l=r.style,f=r.events,p=r.hooks;if(void 0===o&&!e(i)&&!i.tpl&&!e(s)&&0===s.length)return null;var h=e(i)||e(i.key)?void 0:i.key;e(s)||0!==s.length?n(s)||(s=d(t(s)&&1===s.length?s[0]:s)):s=null,void 0!==h&&delete i.key;var b=a(i,o),y=c();return u=u||b.className,l=l||b.style,y.tag=o||null,y.attrs=b.attrs||null,y.events=b.events||f,y.hooks=b.hooks||p,y.children=void 0===s?null:s,y.key=void 0===h?null:h,y.className=void 0===u?null:u,y.style=void 0===l?null:l,y}function d(n){var r=!e(n);if(r&&t(n)){for(var o=[],i=0;i<n.length;i++){var s=n[i];e(s)||"object"!==("undefined"==typeof s?"undefined":h["typeof"](s))?o.push(s):t(s)?s.length>0?o.push(d(s)):o.push(null):o.push(f(s))}return o}return r&&"object"===("undefined"==typeof n?"undefined":h["typeof"](n))&&void 0===n.dom?f(n):n}function p(t,e){for(var n=arguments.length,r=Array(n>2?n-2:0),o=2;n>o;o++)r[o-2]=arguments[o];return f({tag:t,attrs:e,children:r})}var h={};return h["typeof"]="function"==typeof Symbol&&"symbol"===i(Symbol.iterator)?function(t){return"undefined"==typeof t?"undefined":i(t)}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol?"symbol":"undefined"==typeof t?"undefined":i(t)},h.classCallCheck=function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")},h.createClass=function(){function t(t,e){for(var n=0;n<e.length;n++){var r=e[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(t,r.key,r)}}return function(e,n,r){return n&&t(e.prototype,n),r&&t(e,r),e}}(),h["extends"]=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(t[r]=n[r])}return t},l.prototype={setAttrs:function(t){return this.attrs=t,this},setTag:function(t){return this.tag=t,this},setStyle:function(t){return this.style=t,this},setClassName:function(t){return this.className=t,this},setChildren:function(t){return this.children=t,this},setHooks:function(t){return this.hooks=t,this},setEvents:function(t){return this.events=t,this},setKey:function(t){return this.key=t,this}},p})},function(t,e,n){"use strict";t.exports=n(26)},function(t,e,n){var r,o,i="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol?"symbol":typeof t};/*!
-	 * inferno-dom v0.7.6
+	(function (global, factory) {
+		( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() :  true ? !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.InfernoCreateElement = factory();
+	})(undefined, function () {
+		'use strict';
+
+		var babelHelpers = {};
+		babelHelpers.typeof = typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol" ? function (obj) {
+			return typeof obj === 'undefined' ? 'undefined' : _typeof(obj);
+		} : function (obj) {
+			return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj === 'undefined' ? 'undefined' : _typeof(obj);
+		};
+
+		babelHelpers.classCallCheck = function (instance, Constructor) {
+			if (!(instance instanceof Constructor)) {
+				throw new TypeError("Cannot call a class as a function");
+			}
+		};
+
+		babelHelpers.createClass = function () {
+			function defineProperties(target, props) {
+				for (var i = 0; i < props.length; i++) {
+					var descriptor = props[i];
+					descriptor.enumerable = descriptor.enumerable || false;
+					descriptor.configurable = true;
+					if ("value" in descriptor) descriptor.writable = true;
+					Object.defineProperty(target, descriptor.key, descriptor);
+				}
+			}
+
+			return function (Constructor, protoProps, staticProps) {
+				if (protoProps) defineProperties(Constructor.prototype, protoProps);
+				if (staticProps) defineProperties(Constructor, staticProps);
+				return Constructor;
+			};
+		}();
+
+		babelHelpers.extends = Object.assign || function (target) {
+			for (var i = 1; i < arguments.length; i++) {
+				var source = arguments[i];
+
+				for (var key in source) {
+					if (Object.prototype.hasOwnProperty.call(source, key)) {
+						target[key] = source[key];
+					}
+				}
+			}
+
+			return target;
+		};
+
+		babelHelpers;
+
+		function isArray(obj) {
+			return obj instanceof Array;
+		}
+
+		function isNullOrUndefined(obj) {
+			return obj === void 0 || obj === null;
+		}
+
+		function isInvalidNode(obj) {
+			return obj === null || obj === false || obj === void 0;
+		}
+
+		function isFunction(obj) {
+			return typeof obj === 'function';
+		}
+
+		function isAttrAnEvent(attr) {
+			return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+		}
+
+		function isAttrAHook(hook) {
+			return hook === 'onCreated' || hook === 'onAttached' || hook === 'onWillDetach' || hook === 'onWillUpdate' || hook === 'onDidUpdate';
+		}
+
+		function isAttrAComponentHook(hook) {
+			return hook === 'onComponentWillMount' || hook === 'onComponentDidMount' || hook === 'onComponentWillUnmount' || hook === 'onComponentShouldUpdate' || hook === 'onComponentWillUpdate' || hook === 'onComponentDidUpdate';
+		}
+
+		function VNode(blueprint) {
+			this.bp = blueprint;
+			this.dom = null;
+			this.instance = null;
+			this.tag = null;
+			this.children = null;
+			this.style = null;
+			this.className = null;
+			this.attrs = null;
+			this.events = null;
+			this.hooks = null;
+			this.key = null;
+			this.clipData = null;
+		}
+
+		VNode.prototype = {
+			setAttrs: function setAttrs(attrs) {
+				this.attrs = attrs;
+				return this;
+			},
+			setTag: function setTag(tag) {
+				this.tag = tag;
+				return this;
+			},
+			setStyle: function setStyle(style) {
+				this.style = style;
+				return this;
+			},
+			setClassName: function setClassName(className) {
+				this.className = className;
+				return this;
+			},
+			setChildren: function setChildren(children) {
+				this.children = children;
+				return this;
+			},
+			setHooks: function setHooks(hooks) {
+				this.hooks = hooks;
+				return this;
+			},
+			setEvents: function setEvents(events) {
+				this.events = events;
+				return this;
+			},
+			setKey: function setKey(key) {
+				this.key = key;
+				return this;
+			}
+		};
+
+		function createVNode(bp) {
+			return new VNode(bp);
+		}
+
+		function createAttrsAndEvents(props, tag) {
+			var events = null;
+			var hooks = null;
+			var attrs = null;
+			var className = null;
+			var style = null;
+
+			if (!isNullOrUndefined(props)) {
+				if (isArray(props)) {
+					return props;
+				}
+				for (var prop in props) {
+					if (prop === 'className') {
+						className = props[prop];
+					} else if (prop === 'style') {
+						style = props[prop];
+					} else if (isAttrAHook(prop) && !isFunction(tag)) {
+						if (isNullOrUndefined(hooks)) {
+							hooks = {};
+						}
+						hooks[prop.substring(2).toLowerCase()] = props[prop];
+						delete props[prop];
+					} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
+						if (isNullOrUndefined(events)) {
+							events = {};
+						}
+						events[prop.toLowerCase()] = props[prop];
+						delete props[prop];
+					} else if (isAttrAComponentHook(prop) && isFunction(tag)) {
+						if (isNullOrUndefined(hooks)) {
+							hooks = {};
+						}
+						hooks['c' + prop.substring(3)] = props[prop];
+						delete props[prop];
+					} else if (!isFunction(tag)) {
+						if (isNullOrUndefined(attrs)) {
+							attrs = {};
+						}
+						attrs[prop] = props[prop];
+					} else {
+						attrs = props;
+					}
+				}
+			}
+			return { attrs: attrs, events: events, className: className, style: style, hooks: hooks };
+		}
+
+		function createChild(_ref) {
+			var tag = _ref.tag;
+			var attrs = _ref.attrs;
+			var children = _ref.children;
+			var className = _ref.className;
+			var style = _ref.style;
+			var events = _ref.events;
+			var hooks = _ref.hooks;
+
+			if (tag === void 0 && !isNullOrUndefined(attrs) && !attrs.tpl && !isNullOrUndefined(children) && children.length === 0) {
+				return null;
+			}
+			var key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : void 0;
+
+			if (!isNullOrUndefined(children) && children.length === 0) {
+				children = null;
+			} else if (!isInvalidNode(children)) {
+				children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
+			}
+
+			if (key !== void 0) {
+				delete attrs.key;
+			}
+			var attrsAndEvents = createAttrsAndEvents(attrs, tag);
+			var vNode = createVNode();
+
+			className = className || attrsAndEvents.className;
+			style = style || attrsAndEvents.style;
+
+			vNode.tag = tag || null;
+			vNode.attrs = attrsAndEvents.attrs || null;
+			vNode.events = attrsAndEvents.events || events;
+			vNode.hooks = attrsAndEvents.hooks || hooks;
+			vNode.children = children === void 0 ? null : children;
+			vNode.key = key === void 0 ? null : key;
+			vNode.className = className === void 0 ? null : className;
+			vNode.style = style === void 0 ? null : style;
+
+			return vNode;
+		}
+
+		function createChildren(children) {
+			var childrenDefined = !isNullOrUndefined(children);
+			if (childrenDefined && isArray(children)) {
+				var newChildren = [];
+
+				for (var i = 0; i < children.length; i++) {
+					var child = children[i];
+					if (!isNullOrUndefined(child) && (typeof child === 'undefined' ? 'undefined' : babelHelpers.typeof(child)) === 'object') {
+						if (isArray(child)) {
+							if (child.length > 0) {
+								newChildren.push(createChildren(child));
+							} else {
+								newChildren.push(null);
+							}
+						} else {
+							newChildren.push(createChild(child));
+						}
+					} else {
+						newChildren.push(child);
+					}
+				}
+				return newChildren;
+			} else if (childrenDefined && (typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
+				return children.dom === void 0 ? createChild(children) : children;
+			}
+			return children;
+		}
+
+		function createElement(tag, props) {
+			for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+				children[_key - 2] = arguments[_key];
+			}
+
+			return createChild({ tag: tag, attrs: props, children: children });
+		}
+
+		return createElement;
+	});
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = __webpack_require__(26);
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	/*!
+	 * inferno-dom v0.7.7
 	 * (c) 2016 Dominic Gannaway
 	 * Released under the MPL-2.0 License.
 	 */
-!function(s,u){"object"===i(e)&&"undefined"!=typeof t?t.exports=u():(r=u,o="function"==typeof r?r.call(e,n,e,t):r,!(void 0!==o&&(t.exports=o)))}(void 0,function(){"use strict";function t(t,n){if(!o(t)){var r=e(t);(r&&t.length>0||!r)&&(n?n.children=t:n={children:t})}return n}function e(t){return t instanceof Array}function n(t){return void 0!==t.prototype.render}function r(t){return"string"==typeof t||"number"==typeof t}function o(t){return void 0===t||null===t}function s(t){return null===t||t===!1||void 0===t}function u(t){return"function"==typeof t}function l(t){return"string"==typeof t}function c(t){return t instanceof Promise}function a(t,e,n){t.splice(t.indexOf(e),1,n)}function f(t,e,n,r,i){if(void 0!==e){var s=t.key,u=null===s?e.pools.nonKeyed:e.pools.keyed[s];if(!o(u)){var l=u.pop();if(!o(l))return rt(l,t,null,n,r,i,!0,e.isSVG),t.dom}}return null}function d(t){var e=t.bp;if(!o(e)){var n=t.key,r=e.pools;if(null===n){var i=r.nonKeyed;i&&i.push(t)}else{var s=r.keyed;(s[n]||(s[n]=[])).push(t)}return!0}return!1}function p(t,n,r,o,i,u){if(e(t))return $(t,n);if(s(t))return null;var l=t.bp;if(St){var c=f(t,l,r,o,i);if(null!==c)return null!==n&&n.appendChild(c),c}return void 0===l?y(t,n,r,o,i,u):b(t,l,n,r,o,i)}function h(t){"select"===t.tag&&I(t)}function b(t,e,n,r,o,i){var s=t.tag;if(e.isComponent===!0)return x(t,s,t.attrs||{},t.hooks,t.children,i,n,r,o);var u=j(e.tag,e.isSVG);switch(t.dom=u,e.hasHooks===!0&&H(t.hooks,r,u),e.lazy===!0&&dt(t,r,u),e.childrenType){case 1:N(t.children,u,!0);break;case 2:p(t.children,u,r,o,i);break;case 3:g(t,t.children,u,r,o,i);break;case 4:m(t.children,u,r,o,i);break;case 5:w(t,t.children,u,r,o,i)}if(e.hasAttrs===!0){h(t);var l=t.attrs;if(null===e.attrKeys){var c=Object.keys(l);e.attrKeys=e.attrKeys?e.attrKeys.concat(c):c}var a=e.attrKeys;O(l,a,u,i)}if(e.hasClassName===!0&&(u.className=t.className),e.hasStyle===!0&&ot(null,t.style,u),e.hasEvents===!0){var f=t.events;null===e.eventKeys&&(e.eventKeys=Object.keys(f));var d=e.eventKeys;_(f,d,u)}return null!==n&&n.appendChild(u),u}function y(t,e,n,r,i,c){var a=t.tag;if(null===a)return $(t,e);if(u(a))return x(t,a,t.attrs||{},t.hooks,t.children,i,e,n,r);if(!l(a)||""===a)throw Error("Inferno Error: Expected function or string for element tag type");"svg"===a&&(c=!0);var f=j(a,c),d=t.children,p=t.attrs,b=t.events,y=t.hooks,v=t.className,m=t.style;return t.dom=f,o(y)||H(y,n,f),s(d)||w(t,d,f,n,r,i,c),o(p)||(h(t),O(p,Object.keys(p),f,i)),o(v)||(f.className=v),o(m)||ot(null,m,f),o(b)||_(b,Object.keys(b),f),null!==e&&e.appendChild(f),f}function v(t,e,n,r,o,i,u){var l=D();n&&n.push(l),t.then(function(t){var c=p(t,null,r,o,i,u);null===e||s(c)||e.replaceChild(c,l),n&&a(n,l,c)}),e.appendChild(l)}function m(t,e,n,r,o){for(var i=0;i<t.length;i++)p(t[i],e,n,r,o)}function g(t,n,i,u,l,a,f){for(var d=null,h=!1,b=!1,y=0;y<n.length;y++){var m=n[y];if(r(m))h=!0,d=d||[],d.push(N(m,i,!1));else if(!o(m)&&e(m)){var w=R();h=!0,g(t,m,w,u,l,a,f),k(i,w),d=d||[],d.push(w)}else if(c(m))v(m,i,d,u,l,a,f);else{var S=p(m,i,u,l,a,f);h||!b&&!o(m)&&o(m.key)?(h=!0,d=d||[],d.push(S)):s(m)?(h=!0,d=d||[],d.push(S)):b===!1&&(b=!0)}}null!==d&&d.length>1&&h===!0&&(t.domChildren=d)}function w(t,n,o,i,s,u,l){e(n)?g(t,n,o,i,s,u,l):r(n)?N(n,o,!0):c(n)?v(n,o,null,i,s,u,l):p(n,o,i,s,u,l)}function S(t,e,n){!s(t)&&l(e)&&(t.refs[e]=n)}function _(t,e,n){for(var r=0;r<e.length;r++){var o=e[r];n[o]=t[o]}}function x(e,r,i,u,l,c,a,f,d){i=t(l,i);var h=void 0;if(n(r)){var b=new r(i);b._patch=rt,!o(c)&&i.ref&&S(c,i.ref,b);var y=b.getChildContext();o(y)||(d=wt["extends"]({},d,y)),b.context=d,b._unmounted=!1,b._pendingSetState=!0,b.componentWillMount();var v=b.render();b._pendingSetState=!1,s(v)||(h=p(v,null,f,d,b,!1),b._lastNode=v,null===a||s(h)||a.appendChild(h),b.componentDidMount()),e.dom=h,e.instance=b}else{o(u)||(o(u.componentWillMount)||u.componentWillMount(null,i),o(u.componentDidMount)||f.addListener(function(){u.componentDidMount(h,i)}));var m=r(i);h=p(m,null,f,d,null),e.instance=m,null===a||s(h)||a.appendChild(h),e.dom=h}return h}function O(t,e,n,r){for(var o=0;o<e.length;o++){var i=e[o];"ref"===i?S(r,t[i],n):st(i,t[i],n)}}function C(t){return!o(t.append)}function k(t,e,n){o(n)?C(e)?e.append(t):t.appendChild(e):C(e)?e.insert(t,n):C(n)?t.insertBefore(e,n.childNodes[0]||n.dom):t.insertBefore(e,n)}function E(t,e,n){o(n)?t.appendChild(e):t.insertBefore(e,n)}function j(t,e){var n=void 0;return n=e===!0?document.createElementNS("http://www.w3.org/2000/svg",t):document.createElement(t)}function N(t,e,n){if(null===e)return document.createTextNode(t);if(n){if(""!==t)return e.textContent=t,e.firstChild;var r=document.createTextNode("");return e.appendChild(r),r}var o=document.createTextNode(t);return e.appendChild(o),o}function T(t,e,n,r,i,s,u){var l=null,c=t._lastNode;o(c)||(l=t,t=c);var a=p(e,null,r,i,s,u);e.dom=a,U(n,a,t.dom),null!==l&&(l._lastNode=e),A(t)}function U(t,e,n){C(n)?n.replaceWith(e):t.replaceChild(e,n)}function A(t){if(!s(t)&&!r(t)){var n=t.instance,i=null,u=null;o(n)||(i=n.hooks,u=n.children,void 0!==n.render&&(n.componentWillUnmount(),n._unmounted=!0));var l=t.hooks||i;o(l)||(o(l.willDetach)||l.willDetach(t.dom),o(l.componentWillUnmount)||l.componentWillUnmount(t.dom,l));var c=t.children||u;if(!o(c))if(e(c))for(var a=0;a<c.length;a++)A(c[a]);else A(c)}}function D(){return document.createTextNode("")}function M(t,e){var n=t.dom;n===e?n.innerHTML="":(e.removeChild(n),St&&d(t)),A(t)}function V(t,e,n){for(var r=e||Object.keys(t),o=0;o<r.length;o++){var i=r[o];n[i]=null}}function P(t,e,n){for(var r=0;r<e.length;r++)t.insertBefore(e[r],n)}function K(){return document.activeElement}function L(t,e){if(St){var n=e.length;if(n>5)for(var r=0;n>r;r++){var o=e[r];s(o)||d(o)}}t.textContent=""}function W(t){t!==document.body&&document.activeElement!==t&&t.focus()}function R(){var t=[],e=document.createTextNode(""),n=null,r={dom:e,childNodes:t,appendChild:function(r){t.push(r),n&&n.insertBefore(r,e)},removeChild:function(e){n&&n.removeChild(e),t.splice(t.indexOf(e),1)},insertBefore:function(e,r){n&&n.insertBefore(e,r),t.splice(t.indexOf(r),0,e)},replaceChild:function(e,r){n.replaceChild(e,r),a(t,r,e)},append:function(r){r.appendChild(e),n=r,P(n,t,e)},insert:function(r,o){r.insertBefore(e,o),n=r,P(n,t,e)},remove:function(){n.removeChild(e);for(var r=0;r<t.length;r++)n.removeChild(t[r]);n=null},replaceWith:function(r){n.replaceChild(r,e);for(var o=0;o<t.length;o++)n.removeChild(t[o]);n=null},getElementsByTagName:null};return Object.defineProperty(r,"parentNode",{get:function(){return n}}),Object.defineProperty(r,"firstChild",{get:function(){return t[0]}}),r}function Y(t){return t.length&&!o(t[0])&&!o(t[0].key)}function B(t,e){if("option"===t.tag){var n=t.attrs&&t.attrs.value;e[n]?(t.attrs=t.attrs||{},t.attrs.selected="selected",t.dom.selected=!0):t.dom.selected=!1}else for(var r=0,o=t.children.length;o>r;r++)B(t.children[r],e)}function I(t){var n=t.attrs&&t.attrs.value,r={};if(e(n))for(var o=0,i=n.length;i>o;o++)r[n[o]]=n[o];else r[n]=n;for(var s=0,u=t.children.length;u>s;s++)B(t.children[s],r);t.attrs&&t.attrs[n]&&delete t.attrs.value}function $(t,e){var n=D();return null!==e&&e.appendChild(n),s(t)||(t.dom=n),n}function H(t,e,n){o(t.created)||t.created(n),o(t.attached)||e.addListener(function(){t.attached(n)})}function X(t){var e=t.attrs.value;o(e)||(t.dom.value=e)}function G(t,e){if("input"===t){var n=e.attrs.type;if("text"===n)X(e);else if("checkbox"===n||"radio"===n){var r=e.attrs.checked;e.dom.checked=!!r}}else"textarea"===t&&X(e)}function z(t,n,i,u,l,c,a){var f=n.children,d=t.children;if(d!==f){var h=null;t.domChildren&&(h=n.domChildren=t.domChildren),s(d)?r(f)?et(i,d,f):o(f)||(e(f)?g(n,f,i,u,l,c,a):p(f,i,u,l,c,a)):s(f)?L(i,d):e(d)?e(f)?null===h&&d.length>1?ct(d,f,i,u,l,c,a):Y(f)?ct(d,f,i,u,l,c,a):lt(d,f,i,h||(n.domChildren=[]),u,l,c,0,a):lt(d,[f],i,h||[],u,l,c,0):e(f)?lt([d],f,i,h||(n.domChildren=[i.firstChild]),u,l,c,0,a):r(f)?et(i,d,f):r(d)?rt(d,f,i,u,l,c,null,a):rt(d,f,i,u,l,c,!0,a)}}function F(t,e,n,r){t&&(l(e)&&delete t.refs[e],l(n)&&(t.refs[n]=r))}function q(t,e,n,r,i){var s=e.events,u=t.events,l=!o(s),c=!o(u);l?c?it(u,s,n,r,i):_(s,r,i):c&&V(u,n,i)}function J(t,e,n,r,i,s){"select"===t.tag&&I(e);var u=e.attrs,l=t.attrs,c=o(u),a=!o(l);if(!c)for(var f=r||Object.keys(u),d=f.length,p=0;d>p;p++){var h=f[p],b=a&&l[h],y=u[h];b!==y&&("ref"===h?F(s,b,y,i):st(h,y,i))}if(a)for(var v=n||Object.keys(l),m=v.length,g=0;m>g;g++){var w=v[g];(c||o(u[w]))&&("ref"===w?F(s,l[w],null,i):i.removeAttribute(w))}}function Q(t,e,r,i,u,l,c,a,f){var d=void 0;e.hasHooks===!0&&(d=e.hooks&&!o(d.willUpdate))&&d.willUpdate(t.dom);var h=e.tag||i.tag,b=t.tag||r.tag;if(b!==h)if(r.isComponent===!0){var y=t.instance;i.isComponent===!0?(T(y||t,e,u,l,c,a,!1),A(t)):n(b)?Z(y._lastNode,e,u,l,c,a,i.isSVG):Z(y,e,u,l,c,a,i.isSVG)}else T(t,e,u,l,c,a,i.isSVG);else if(o(b))e.dom=t.dom;else if(r.isComponent===!0){if(i.isComponent===!0){var v=t.instance;if(!o(v)&&v._unmounted){var m=x(e,b,e.attrs||{},e.hooks,e.children,v,u,l,c);null!==u&&U(u,m,t.dom)}else e.instance=v,e.dom=t.dom,ut(!0,e,e.tag,r,i,v,t.attrs||{},e.attrs||{},e.hooks,e.children,u,l,c)}}else{var w=t.dom,S=r.childrenType,_=i.childrenType;if(e.dom=w,i.lazy===!0&&f===!1){var O=t.clipData;if(null===l.scrollY&&l.refresh(),e.clipData=O,(O.pending===!0||O.top-l.scrollY>l.screenHeight)&&yt(O,w,t,e,u,l))return;if(O.bottom<l.scrollY&&yt(O,w,t,e,u,l))return}if(S>0||_>0)if(5===_||5===S)z(t,e,w,l,c,a);else{var C=t.children,k=e.children;0===S||s(C)?_>2?g(e,k,w,l,c,a):p(k,w,l,c,a):0===_||s(k)?S>2?L(w,C):M(C,w):C!==k&&(4===S&&4===_?ct(C,k,w,l,c,a):2===S&&2===_?rt(C,k,w,l,c,a,!0,!1):1===S&&1===_?et(w,C,k):z(t,e,w,l,c,a))}if(r.hasAttrs!==!0&&i.hasAttrs!==!0||J(t,e,r.attrKeys,i.attrKeys,w,a),r.hasEvents!==!0&&i.hasEvents!==!0||q(t,e,r.eventKeys,i.eventKeys,w),r.hasClassName===!0||i.hasClassName===!0){var E=e.className;t.className!==E&&(o(E)?w.removeAttribute("class"):w.className=E)}if(r.hasStyle===!0||i.hasStyle===!0){var j=e.style;t.style!==j&&ot(t.style,j,w)}e.hasHooks!==!0||o(d.didUpdate)||d.didUpdate(w),G(h,e)}}function Z(t,e,r,i,s,l,a){if(c(e))e.then(function(e){rt(t,e,r,i,s,l,null,!1)});else{var f=e.hooks,d=!o(f);d&&!o(f.willUpdate)&&f.willUpdate(t.dom);var p=e.tag||(o(e.bp)?null:e.bp.tag),h=t.tag||(o(t.bp)?null:t.bp.tag);if("svg"===p&&(a=!0),h!==p){var b=t.instance;u(h)?u(p)?T(b||t,e,r,i,s,l,a):n(h)?Z(b._lastNode,e,r,i,s,l,a):Z(b,e,r,i,s,l,a):T(b||t,e,r,i,s,l,a)}else if(o(h))e.dom=t.dom;else if(u(h)){if(u(p)){var y=t._instance;if(!o(y)&&y._unmounted){var v=x(e,h,e.attrs||{},e.hooks,e.children,y,r,i,s);null!==r&&U(r,v,t.dom)}else e.instance=t.instance,e.dom=t.dom,ut(!1,e,e.tag,null,null,e.instance,t.attrs||{},e.attrs||{},e.hooks,e.children,r,i,s)}}else{var m=t.dom,g=e.className,w=e.style;e.dom=m,z(t,e,m,i,s,l,a),J(t,e,null,null,m,l),q(t,e,null,null,m),t.className!==g&&(o(g)?m.removeAttribute("class"):m.className=g),t.style!==w&&ot(t.style,w,m),d&&!o(f.didUpdate)&&f.didUpdate(m),G(p,e)}}}function tt(t,e,n){t.split(",").forEach(function(t){return e[t]=n})}function et(t,e,n){r(e)?t.firstChild.nodeValue=n:t.textContent=n}function nt(t,e,n,r,o,i,s,u){var l=t.bp,c=e.bp;void 0===l||void 0===c?Z(t,e,n,r,o,i,s):Q(t,e,l,c,n,r,o,i,u)}function rt(t,e,n,o,i,u,l,c){if(null!==l)nt(t,e,n,o,i,u,c,!1);else if(s(t))p(e,n,o,i,u,c);else if(s(e))M(t,n);else if(r(t))if(r(e))n.firstChild.nodeValue=e;else{var a=p(e,null,o,i,u,c);e.dom=a,U(n,a,n.firstChild)}else if(r(e)){var f=document.createTextNode(e);U(n,f,t.dom)}else nt(t,e,n,o,i,u,c,!1)}function ot(t,e,n){if(l(e))n.style.cssText=e;else if(o(t)){if(!o(e))for(var r=Object.keys(e),i=0;i<r.length;i++){var s=r[i];n.style[s]=e[s]}}else if(o(e))n.removeAttribute("style");else{for(var u=Object.keys(e),c=0;c<u.length;c++){var a=u[c];n.style[a]=e[a]}for(var f=Object.keys(t),d=0;d<f.length;d++){var p=f[d];o(e[p])&&(n.style[p]="")}}}function it(t,e,n,r,i){for(var s=r||Object.keys(e),u=0;u<s.length;u++){var l=s[u],c=t[l],a=e[l];c!==a&&(i[l]=a)}for(var f=n||Object.keys(t),d=0;d<f.length;d++){var p=f[d];o(e[p])&&(i[p]=null)}}function st(t,e,n){if(Ot[t])n[t]=null===e?"":e;else if(Ct[t])n[t]=!!e;else{var r=kt[t];e===!1||o(e)?void 0!==r?n.removeAttributeNS(r,t):n.removeAttribute(t):void 0!==r?n.setAttributeNS(r,t,e===!0?t:e):n.setAttribute(t,e===!0?t:e)}}function ut(e,r,i,u,l,c,a,f,d,p,h,b,y){if(f=t(p,f),n(i)){var v=c.props,m=c.state,g=c.state,w=c.getChildContext();o(w)||(y=wt["extends"]({},y,w)),c.context=y;var S=c._updateComponent(m,g,v,f);s(S)||(rt(c._lastNode,S,h,b,y,c,null,!1),r.dom=S.dom,c._lastNode=S)}else{var _=!0,x=e&&l.hasHooks===!0||!o(d);if(x&&!o(d.componentShouldUpdate)&&(_=d.componentShouldUpdate(r.dom,a,f)),_!==!1){x&&!o(d.componentWillUpdate)&&d.componentWillUpdate(r.dom,a,f);var O=i(f);if(!s(O)){var C=r.dom;O.dom=C,rt(c,O,h,b,y,null,null,!1),r.instance=O,x&&!o(d.componentDidUpdate)&&d.componentDidUpdate(r.dom,a,f)}}}}function lt(t,n,i,u,l,c,a,f,d){var h=void 0===i.append,b=t.length,y=n.length,v=b===y;if(v===!1)if(b>y)for(;b!==y;){var m=t[b-1];s(m)||(i.removeChild(u[b-1+f]),h&&u.splice(b-1+f,1),A(m),b--,t.pop())}else for(;b!==y;){var g=n[b],w=void 0;t.push(g),w=r(g)?document.createTextNode(g):p(g,null,c,a,d),s(w)||k(i,w),h&&(1===b&&u.push(i.firstChild),h&&u.splice(b+f,0,w)),b++}for(var S=0;y>S;S++){var _=t[S],x=n[S],O=S+f;if(_!==x)if(s(x)){if(!s(_))if(e(_)&&0===_.length)for(var C=0;C<_.length;C++)M(_[C],i);else{var E=u[O];o(E)&&O--,i.removeChild(u[O]),h&&(u.splice(O,1),f--),A(_)}}else if(s(_))if(r(x)){var j=document.createTextNode(x),N=u[O];if(o(N)){var T=u[O+1];k(i,j,T),h&&u.splice(O,1,j)}else k(i,j,N),h&&u.splice(O,0,j)}else{var D=p(x,null,l,c,a,d),V=u[O];if(o(V)){var P=u[O+1];k(i,D,P),h&&u.splice(O,1,D)}else k(i,D,V),h&&u.splice(O,0,D)}else if(r(x))if(1===b)r(_)?void 0===i.getElementsByTagName?i.nodeValue=x:i.firstChild.nodeValue=x:(A(_),i.textContent=x);else{var K=document.createTextNode(x),L=u[O];o(L)?i.nodeValue=K.nodeValue:r(_)?L.nodeValue=x:void 0===L.append?(h&&u.splice(O,1,K),U(i,K,L)):(k(i,K,L.firstChild),L.remove(),u.splice(0,u.length,K)),A(_)}else if(e(x))if(Y(x))ct(_,x,u[O],l,c,a,d);else if(e(_)){var W=u[O];if(void 0===W.append)if(x.length>1&&1===_.length){var B=R();B.insert(i,W),B.appendChild(W),h&&u.splice(O,1,B),lt(_,x,B,B.childNodes,l,c,a,0,d)}else lt(_,x,i,u,l,c,a,0,d);else lt(_,x,u[O],u[O].childNodes,l,c,a,0,d)}else if(x.length>1){var I=R();I.appendChild(i.firstChild),k(i,I,i.firstChild),h&&u.splice(O,1,I),lt([_],x,I,I.childNodes,l,c,a,S,d)}else lt([_],x,i,u,l,c,a,S,d);else e(_)?lt(_,[x],u,u[O].childNodes,l,c,a,0,d):rt(_,x,i,l,c,a,null,d)}}function ct(t,e,n,r,o,i,s){for(var u=t.length,l=e.length,c=void 0,a=u-1,f=l-1,d=0,h=0,b=null,y=null,v=null,m=null,g=void 0,w=void 0,S=0,_=void 0,x=void 0;a>=d&&f>=h&&(y=e[h],b=t[d],y.key===b.key);)rt(b,y,n,r,o,i,!0,s),h++,d++;for(;a>=d&&f>=h&&(v=e[f],m=t[a],v.key===m.key);)rt(m,v,n,r,o,i,!0,s),f--,a--;for(;a>=d&&f>=h&&(v=e[f],b=t[d],v.key===b.key);)w=l>f+1?e[f+1].dom:null,rt(b,v,n,r,o,i,!0,s),E(n,v.dom,w),f--,d++;for(;a>=d&&f>=h&&(y=e[h],m=t[a],y.key===m.key);)w=t[d].dom,rt(m,y,n,r,o,i,!0,s),E(n,y.dom,w),h++,a--;if(d>a){if(f>=h)for(w=l>f+1?e[f+1].dom:null;f>=h;h++)E(n,p(e[h],null,r,o,i,s),w)}else if(h>f)for(;a>=d;)M(t[d++],n);else{var O=a-d+1,C=f-h+1,k=new Array(C);for(c=0;C>c;c++)k[c]=-1;var j=!1,N=0;if(16>=O*C)for(c=d;a>=c;c++){var T=!0;for(m=t[c],g=h;f>=g;g++)if(v=e[g],m.key===v.key){k[g-h]=c,S>g?j=!0:S=g,rt(m,v,n,r,o,i,!0,s),T=!1;break}T&&(M(m,n),N++)}else{var U=new Map;for(c=h;f>=c;c++)x=e[c],U.set(x.key,c);for(c=a;c>=d;c--)m=t[c],g=U.get(m.key),void 0===g?(M(m,n),N++):(v=e[g],k[g-h]=c,S>g?j=!0:S=g,rt(m,v,n,r,o,i,!0,s))}if(j){var A=at(k);for(g=A.length-1,c=C-1;c>=0;c--)-1===k[c]?(_=c+h,w=l>_+1?e[_+1].dom:null,E(n,p(e[_],null,r,o,i,s),w)):0>g||c!==A[g]?(_=c+h,w=l>_+1?e[_+1].dom:null,E(n,e[_].dom,w)):g--}else if(O-N!==C)for(c=C-1;c>=0;c--)-1===k[c]&&(_=c+h,w=l>_+1?e[_+1].dom:null,E(n,p(e[_],null,r,o,i,s),w))}}function at(t){var e=t.slice(0),n=[];n.push(0);var r=void 0,o=void 0,i=void 0,s=void 0,u=void 0;for(r=0;r<t.length;r++)if(-1!==t[r])if(o=n[n.length-1],t[o]<t[r])e[r]=o,n.push(r);else{for(i=0,s=n.length-1;s>i;)u=(i+s)/2|0,t[n[u]]<t[r]?i=u+1:s=u;t[r]<t[n[i]]&&(i>0&&(e[r]=n[i-1]),n[i]=r)}for(i=n.length,s=n[i-1];i-- >0;)n[i]=s,s=e[s];return n}function ft(){this._listeners=[],this.scrollX=null,this.scrollY=null,this.screenHeight=jt,this.screenWidth=Et}function dt(t,e,n){e.addListener(function(){var r=n.getBoundingClientRect();null===e.scrollY&&e.refresh(),t.clipData={top:r.top+e.scrollY,left:r.left+e.scrollX,bottom:r.bottom+e.scrollY,right:r.right+e.scrollX,pending:!1}})}function pt(t){nt(t.lastNode,t.nextNode,t.parentDom,t.lifecycle,null,null,!1,!0),t.clipData.pending=!1}function ht(){Dt=!0,setTimeout(bt,100)}function bt(){At.forEach(pt),At.clear(),Dt=!1}function yt(t,e,n,r,o,i){if(performance.now()>Ut+2e3){var s=At.get(e);return void 0===s?At.set(e,{lastNode:n,nextNode:r,parentDom:o,clipData:t,lifecycle:i}):s.nextNode=r,t.pending=!0,Dt===!1&&ht(),!0}return bt(),!1}function vt(t){for(var e=0;e<Mt.length;e++){var n=Mt[e];if(n.dom===t)return n}return null}function mt(t){for(var e=0;e<Mt.length;e++){var n=Mt[e];if(n===t)return void Mt.splice(e,1)}}function gt(t,e){var n=vt(e),r=new ft;if(null===n)p(t,e,r,{},null,!1),r.trigger(),Mt.push({node:t,dom:e});else{var o=K();rt(n.node,t,e,r,{},null,null,!1),r.trigger(),null===t&&mt(n),n.node=t,window.node=t,W(o)}}var wt={};wt["typeof"]="function"==typeof Symbol&&"symbol"===i(Symbol.iterator)?function(t){return"undefined"==typeof t?"undefined":i(t)}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol?"symbol":"undefined"==typeof t?"undefined":i(t)},wt.classCallCheck=function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")},wt.createClass=function(){function t(t,e){for(var n=0;n<e.length;n++){var r=e[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(t,r.key,r)}}return function(e,n,r){return n&&t(e.prototype,n),r&&t(e,r),e}}(),wt["extends"]=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(t[r]=n[r])}return t};var St=!0,_t="http://www.w3.org/1999/xlink",xt="http://www.w3.org/XML/1998/namespace",Ot={},Ct={},kt={};tt("xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type",kt,_t),tt("xml:base,xml:lang,xml:space",kt,xt),tt("volume,value",Ot,!0),tt("muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate",Ct,!0);var Et=window.screen.width,jt=window.screen.height,Nt=0,Tt=0,Ut=0;window.onscroll=function(t){Nt=window.scrollX,Tt=window.scrollY,Ut=performance.now()},window.resize=function(t){Nt=window.scrollX,Tt=window.scrollY,Et=window.screen.width,jt=window.screen.height,Ut=performance.now()},ft.prototype={refresh:function(){this.scrollX=window.scrollX,this.scrollY=window.scrollY},addListener:function(t){this._listeners.push(t)},trigger:function(){for(var t=0;t<this._listeners.length;t++)this._listeners[t]()}};var At=new Map,Dt=!1,Mt=[],Vt={render:gt};return Vt})},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t}}function o(){s["default"].registerAction(u,function(t,e){var n=t.todos.slice(0),r=n.length>0?n[n.length-1].id+1:0;return n.push({id:r,text:e.text}),{todos:n}}),s["default"].registerAction(l,function(t,e){var n=t.todos.slice(0);return n.splice(n.findIndex(function(t){return t.id===e.id}),1),{todos:n}}),s["default"].registerAction(c,function(t,e){return{todos:[]}})}Object.defineProperty(e,"__esModule",{value:!0}),e.REMOVE_ALL_TODOS=e.EDIT_TODO=e.REMOVE_TODO=e.ADD_TODO=void 0,e.registerActions=o;var i=n(2),s=r(i),u=e.ADD_TODO="ADD_TODO",l=e.REMOVE_TODO="REMOVE_TODO",c=(e.EDIT_TODO="EDIT_TODO",e.REMOVE_ALL_TODOS="REMOVE_ALL_TODOS")},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t}}Object.defineProperty(e,"__esModule",{value:!0}),e.app=void 0;var o=n(2),i=r(o),s=n(23),u=r(s),l=n(27),c=function(t){return(0,u["default"])("span",null,(0,u["default"])("input",{type:"text",onKeyUp:function(t){13===t.keyCode&&""!==t.target.value.trim()&&(i["default"].createAction(l.ADD_TODO,{text:t.target.value}),t.target.value="")}}))},a=function(t){return(0,u["default"])("div",{className:"todo-list"},t.todos.map(function(t){return(0,u["default"])(f,{todo:t})}))},f=function(t){return(0,u["default"])("div",{className:"todo-list__item"},(0,u["default"])("span",null,t.todo.id+" "+t.todo.text),(0,u["default"])("button",{type:"button",className:"remove-button",onClick:i["default"].bindAction(l.REMOVE_TODO,{id:t.todo.id})},"Remove"))};e.app=function(t){return(0,u["default"])("div",null,(0,u["default"])("div",{className:"title"},t.title),(0,u["default"])(c,null),(0,u["default"])(a,{todos:t.todos}),(0,u["default"])("button",{type:"button",onClick:i["default"].bindAction(l.REMOVE_ALL_TODOS)},"Remove all"))}}]);
+	(function (global, factory) {
+		( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() :  true ? !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.InfernoDOM = factory();
+	})(undefined, function () {
+		'use strict';
+
+		var babelHelpers = {};
+		babelHelpers.typeof = typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol" ? function (obj) {
+			return typeof obj === 'undefined' ? 'undefined' : _typeof(obj);
+		} : function (obj) {
+			return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj === 'undefined' ? 'undefined' : _typeof(obj);
+		};
+
+		babelHelpers.classCallCheck = function (instance, Constructor) {
+			if (!(instance instanceof Constructor)) {
+				throw new TypeError("Cannot call a class as a function");
+			}
+		};
+
+		babelHelpers.createClass = function () {
+			function defineProperties(target, props) {
+				for (var i = 0; i < props.length; i++) {
+					var descriptor = props[i];
+					descriptor.enumerable = descriptor.enumerable || false;
+					descriptor.configurable = true;
+					if ("value" in descriptor) descriptor.writable = true;
+					Object.defineProperty(target, descriptor.key, descriptor);
+				}
+			}
+
+			return function (Constructor, protoProps, staticProps) {
+				if (protoProps) defineProperties(Constructor.prototype, protoProps);
+				if (staticProps) defineProperties(Constructor, staticProps);
+				return Constructor;
+			};
+		}();
+
+		babelHelpers.extends = Object.assign || function (target) {
+			for (var i = 1; i < arguments.length; i++) {
+				var source = arguments[i];
+
+				for (var key in source) {
+					if (Object.prototype.hasOwnProperty.call(source, key)) {
+						target[key] = source[key];
+					}
+				}
+			}
+
+			return target;
+		};
+
+		babelHelpers;
+
+		function addChildrenToProps(children, props) {
+			if (!isNullOrUndefined(children)) {
+				var isChildrenArray = isArray(children);
+				if (isChildrenArray && children.length > 0 || !isChildrenArray) {
+					if (props) {
+						props.children = children;
+					} else {
+						props = {
+							children: children
+						};
+					}
+				}
+			}
+			return props;
+		}
+
+		function isArray(obj) {
+			return obj instanceof Array;
+		}
+
+		function isStatefulComponent(obj) {
+			return obj.prototype.render !== void 0;
+		}
+
+		function isStringOrNumber(obj) {
+			return typeof obj === 'string' || typeof obj === 'number';
+		}
+
+		function isNullOrUndefined(obj) {
+			return obj === void 0 || obj === null;
+		}
+
+		function isInvalidNode(obj) {
+			return obj === null || obj === false || obj === void 0;
+		}
+
+		function isFunction(obj) {
+			return typeof obj === 'function';
+		}
+
+		function isString(obj) {
+			return typeof obj === 'string';
+		}
+
+		function isPromise(obj) {
+			return obj instanceof Promise;
+		}
+
+		function replaceInArray(array, obj, newObj) {
+			array.splice(array.indexOf(obj), 1, newObj);
+		}
+
+		var recyclingEnabled = true;
+
+		function recycle(node, bp, lifecycle, context, instance) {
+			if (bp !== void 0) {
+				var key = node.key;
+				var _pool = key === null ? bp.pools.nonKeyed : bp.pools.keyed[key];
+				if (!isNullOrUndefined(_pool)) {
+					var recycledNode = _pool.pop();
+					if (!isNullOrUndefined(recycledNode)) {
+						patch(recycledNode, node, null, lifecycle, context, instance, true, bp.isSVG);
+						return node.dom;
+					}
+				}
+			}
+			return null;
+		}
+
+		function pool(node) {
+			var bp = node.bp;
+
+			if (!isNullOrUndefined(bp)) {
+				var key = node.key;
+				var pools = bp.pools;
+
+				if (key === null) {
+					var _pool2 = pools.nonKeyed;
+					_pool2 && _pool2.push(node);
+				} else {
+					var _pool3 = pools.keyed;
+					(_pool3[key] || (_pool3[key] = [])).push(node);
+				}
+				return true;
+			}
+			return false;
+		}
+
+		function mount(input, parentDom, lifecycle, context, instance, isSVG) {
+			if (isArray(input)) {
+				return placeholder(input, parentDom);
+			}
+			if (isInvalidNode(input)) {
+				return null;
+			}
+
+			var bp = input.bp;
+
+			if (recyclingEnabled) {
+				var dom = recycle(input, bp, lifecycle, context, instance);
+
+				if (dom !== null) {
+					if (parentDom !== null) {
+						parentDom.appendChild(dom);
+					}
+					return dom;
+				}
+			}
+
+			if (bp === void 0) {
+				return appendNode(input, parentDom, lifecycle, context, instance, isSVG);
+			} else {
+				return appendNodeWithTemplate(input, bp, parentDom, lifecycle, context, instance);
+			}
+		}
+
+		function handleSelects(node) {
+			if (node.tag === 'select') {
+				selectValue(node);
+			}
+		}
+
+		function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance) {
+			var tag = node.tag;
+
+			if (bp.isComponent === true) {
+				return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
+			}
+			var dom = documentCreateElement(bp.tag, bp.isSVG);
+
+			node.dom = dom;
+			if (bp.hasHooks === true) {
+				handleAttachedHooks(node.hooks, lifecycle, dom);
+			}
+			if (bp.lazy === true) {
+				handleLazyAttached(node, lifecycle, dom);
+			}
+			// bp.childrenType:
+			// 0: no children
+			// 1: text node
+			// 2: single child
+			// 3: multiple children
+			// 4: multiple children (keyed)
+			// 5: variable children (defaults to no optimisation)
+
+			switch (bp.childrenType) {
+				case 1:
+					appendText(node.children, dom, true);
+					break;
+				case 2:
+					mount(node.children, dom, lifecycle, context, instance);
+					break;
+				case 3:
+					mountArrayChildren(node, node.children, dom, lifecycle, context, instance);
+					break;
+				case 4:
+					mountArrayChildrenWithKeys(node.children, dom, lifecycle, context, instance);
+					break;
+				case 5:
+					mountChildren(node, node.children, dom, lifecycle, context, instance);
+					break;
+				default:
+					break;
+			}
+
+			if (bp.hasAttrs === true) {
+				handleSelects(node);
+				var attrs = node.attrs;
+
+				if (bp.attrKeys === null) {
+					var newKeys = Object.keys(attrs);
+					bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
+				}
+				var attrKeys = bp.attrKeys;
+
+				mountAttributes(attrs, attrKeys, dom, instance);
+			}
+			if (bp.hasClassName === true) {
+				dom.className = node.className;
+			}
+			if (bp.hasStyle === true) {
+				patchStyle(null, node.style, dom);
+			}
+			if (bp.hasEvents === true) {
+				var events = node.events;
+
+				if (bp.eventKeys === null) {
+					bp.eventKeys = Object.keys(events);
+				}
+				var eventKeys = bp.eventKeys;
+
+				mountEvents(events, eventKeys, dom);
+			}
+			if (parentDom !== null) {
+				parentDom.appendChild(dom);
+			}
+			return dom;
+		}
+
+		function appendNode(node, parentDom, lifecycle, context, instance, isSVG) {
+			var tag = node.tag;
+
+			if (tag === null) {
+				return placeholder(node, parentDom);
+			}
+			if (isFunction(tag)) {
+				return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
+			}
+			if (!isString(tag) || tag === '') {
+				throw Error('Inferno Error: Expected function or string for element tag type');
+			}
+			if (tag === 'svg') {
+				isSVG = true;
+			}
+			var dom = documentCreateElement(tag, isSVG);
+			var children = node.children;
+			var attrs = node.attrs;
+			var events = node.events;
+			var hooks = node.hooks;
+			var className = node.className;
+			var style = node.style;
+
+			node.dom = dom;
+			if (!isNullOrUndefined(hooks)) {
+				handleAttachedHooks(hooks, lifecycle, dom);
+			}
+			if (!isInvalidNode(children)) {
+				mountChildren(node, children, dom, lifecycle, context, instance, isSVG);
+			}
+			if (!isNullOrUndefined(attrs)) {
+				handleSelects(node);
+				mountAttributes(attrs, Object.keys(attrs), dom, instance);
+			}
+			if (!isNullOrUndefined(className)) {
+				dom.className = className;
+			}
+			if (!isNullOrUndefined(style)) {
+				patchStyle(null, style, dom);
+			}
+			if (!isNullOrUndefined(events)) {
+				mountEvents(events, Object.keys(events), dom);
+			}
+			if (parentDom !== null) {
+				parentDom.appendChild(dom);
+			}
+			return dom;
+		}
+
+		function appendPromise(child, parentDom, domChildren, lifecycle, context, instance, isSVG) {
+			var placeholder = createEmptyTextNode();
+			domChildren && domChildren.push(placeholder);
+
+			child.then(function (node) {
+				// TODO check for text nodes and arrays
+				var dom = mount(node, null, lifecycle, context, instance, isSVG);
+				if (parentDom !== null && !isInvalidNode(dom)) {
+					parentDom.replaceChild(dom, placeholder);
+				}
+				domChildren && replaceInArray(domChildren, placeholder, dom);
+			});
+			parentDom.appendChild(placeholder);
+		}
+
+		function mountArrayChildrenWithKeys(children, parentDom, lifecycle, context, instance) {
+			for (var i = 0; i < children.length; i++) {
+				mount(children[i], parentDom, lifecycle, context, instance);
+			}
+		}
+
+		function mountArrayChildren(node, children, parentDom, lifecycle, context, instance, isSVG) {
+			var domChildren = null;
+			var isNonKeyed = false;
+			var hasKeyedAssumption = false;
+
+			for (var i = 0; i < children.length; i++) {
+				var child = children[i];
+
+				if (isStringOrNumber(child)) {
+					isNonKeyed = true;
+					domChildren = domChildren || [];
+					domChildren.push(appendText(child, parentDom, false));
+				} else if (!isNullOrUndefined(child) && isArray(child)) {
+					var virtualFragment = createVirtualFragment();
+
+					isNonKeyed = true;
+					mountArrayChildren(node, child, virtualFragment, lifecycle, context, instance, isSVG);
+					insertOrAppendNonKeyed(parentDom, virtualFragment);
+					domChildren = domChildren || [];
+					domChildren.push(virtualFragment);
+				} else if (isPromise(child)) {
+					appendPromise(child, parentDom, domChildren, lifecycle, context, instance, isSVG);
+				} else {
+					var domNode = mount(child, parentDom, lifecycle, context, instance, isSVG);
+
+					if (isNonKeyed || !hasKeyedAssumption && !isNullOrUndefined(child) && isNullOrUndefined(child.key)) {
+						isNonKeyed = true;
+						domChildren = domChildren || [];
+						domChildren.push(domNode);
+					} else if (isInvalidNode(child)) {
+						isNonKeyed = true;
+						domChildren = domChildren || [];
+						domChildren.push(domNode);
+					} else if (hasKeyedAssumption === false) {
+						hasKeyedAssumption = true;
+					}
+				}
+			}
+			if (domChildren !== null && domChildren.length > 1 && isNonKeyed === true) {
+				node.domChildren = domChildren;
+			}
+		}
+
+		function mountChildren(node, children, parentDom, lifecycle, context, instance, isSVG) {
+			if (isArray(children)) {
+				mountArrayChildren(node, children, parentDom, lifecycle, context, instance, isSVG);
+			} else if (isStringOrNumber(children)) {
+				appendText(children, parentDom, true);
+			} else if (isPromise(children)) {
+				appendPromise(children, parentDom, null, lifecycle, context, instance, isSVG);
+			} else {
+				mount(children, parentDom, lifecycle, context, instance, isSVG);
+			}
+		}
+
+		function mountRef(instance, value, refValue) {
+			if (!isInvalidNode(instance) && isString(value)) {
+				instance.refs[value] = refValue;
+			}
+		}
+
+		function mountEvents(events, eventKeys, dom) {
+			for (var i = 0; i < eventKeys.length; i++) {
+				var event = eventKeys[i];
+
+				dom[event] = events[event];
+			}
+		}
+
+		function mountComponent(parentNode, Component, props, hooks, children, lastInstance, parentDom, lifecycle, context) {
+			props = addChildrenToProps(children, props);
+
+			var dom = void 0;
+			if (isStatefulComponent(Component)) {
+				var instance = new Component(props);
+
+				instance._patch = patch;
+				if (!isNullOrUndefined(lastInstance) && props.ref) {
+					mountRef(lastInstance, props.ref, instance);
+				}
+				var childContext = instance.getChildContext();
+
+				if (!isNullOrUndefined(childContext)) {
+					context = babelHelpers.extends({}, context, childContext);
+				}
+				instance.context = context;
+				instance._unmounted = false;
+				instance._parentNode = parentNode;
+
+				instance._pendingSetState = true;
+				instance.componentWillMount();
+				var node = instance.render();
+				instance._pendingSetState = false;
+
+				if (!isInvalidNode(node)) {
+					dom = mount(node, null, lifecycle, context, instance, false);
+					instance._lastNode = node;
+					instance.componentDidMount();
+				} else {
+					// create placeholder
+					dom = document.createTextNode('');
+					// a clever trick to force the next node to replace this placeholder :)
+					instance._lastNode = {
+						tag: 'null',
+						dom: dom
+					};
+				}
+				if (parentDom !== null && !isInvalidNode(dom)) {
+					parentDom.appendChild(dom);
+				}
+				parentNode.dom = dom;
+				parentNode.instance = instance;
+			} else {
+				if (!isNullOrUndefined(hooks)) {
+					if (!isNullOrUndefined(hooks.componentWillMount)) {
+						hooks.componentWillMount(null, props);
+					}
+					if (!isNullOrUndefined(hooks.componentDidMount)) {
+						lifecycle.addListener(function () {
+							hooks.componentDidMount(dom, props);
+						});
+					}
+				}
+
+				/* eslint new-cap: 0 */
+				var _node = Component(props);
+				dom = mount(_node, null, lifecycle, context, null);
+
+				parentNode.instance = _node;
+
+				if (parentDom !== null && !isInvalidNode(dom)) {
+					parentDom.appendChild(dom);
+				}
+				parentNode.dom = dom;
+			}
+			return dom;
+		}
+
+		function mountAttributes(attrs, attrKeys, dom, instance) {
+			for (var i = 0; i < attrKeys.length; i++) {
+				var attr = attrKeys[i];
+
+				if (attr === 'ref') {
+					mountRef(instance, attrs[attr], dom);
+				} else {
+					patchAttribute(attr, attrs[attr], dom);
+				}
+			}
+		}
+
+		function isVirtualFragment(obj) {
+			return !isNullOrUndefined(obj.append);
+		}
+
+		function insertOrAppendNonKeyed(parentDom, newNode, nextNode) {
+			if (isNullOrUndefined(nextNode)) {
+				if (isVirtualFragment(newNode)) {
+					newNode.append(parentDom);
+				} else {
+					parentDom.appendChild(newNode);
+				}
+			} else {
+				if (isVirtualFragment(newNode)) {
+					newNode.insert(parentDom, nextNode);
+				} else if (isVirtualFragment(nextNode)) {
+					parentDom.insertBefore(newNode, nextNode.childNodes[0] || nextNode.dom);
+				} else {
+					parentDom.insertBefore(newNode, nextNode);
+				}
+			}
+		}
+
+		function insertOrAppendKeyed(parentDom, newNode, nextNode) {
+			if (isNullOrUndefined(nextNode)) {
+				parentDom.appendChild(newNode);
+			} else {
+				parentDom.insertBefore(newNode, nextNode);
+			}
+		}
+
+		function documentCreateElement(tag, isSVG) {
+			var dom = void 0;
+
+			if (isSVG === true) {
+				dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
+			} else {
+				dom = document.createElement(tag);
+			}
+			return dom;
+		}
+
+		function appendText(text, parentDom, singleChild) {
+			if (parentDom === null) {
+				return document.createTextNode(text);
+			} else {
+				if (singleChild) {
+					if (text !== '') {
+						parentDom.textContent = text;
+						return parentDom.firstChild;
+					} else {
+						var textNode = document.createTextNode('');
+
+						parentDom.appendChild(textNode);
+						return textNode;
+					}
+				} else {
+					var _textNode = document.createTextNode(text);
+
+					parentDom.appendChild(_textNode);
+					return _textNode;
+				}
+			}
+		}
+
+		function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
+			var lastInstance = null;
+			var instanceLastNode = lastNode._lastNode;
+
+			if (!isNullOrUndefined(instanceLastNode)) {
+				lastInstance = lastNode;
+				lastNode = instanceLastNode;
+			}
+			var dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
+
+			nextNode.dom = dom;
+			replaceNode(parentDom, dom, lastNode.dom);
+			if (lastInstance !== null) {
+				lastInstance._lastNode = nextNode;
+			}
+			detachNode(lastNode);
+		}
+
+		function replaceNode(parentDom, nextDom, lastDom) {
+			if (isVirtualFragment(lastDom)) {
+				lastDom.replaceWith(nextDom);
+			} else {
+				parentDom.replaceChild(nextDom, lastDom);
+			}
+		}
+
+		function detachNode(node) {
+			if (isInvalidNode(node) || isStringOrNumber(node)) {
+				return;
+			}
+			var instance = node.instance;
+
+			var instanceHooks = null;
+			var instanceChildren = null;
+			if (!isNullOrUndefined(instance)) {
+				instanceHooks = instance.hooks;
+				instanceChildren = instance.children;
+
+				if (instance.render !== void 0) {
+					instance.componentWillUnmount();
+					instance._unmounted = true;
+				}
+			}
+			var hooks = node.hooks || instanceHooks;
+			if (!isNullOrUndefined(hooks)) {
+				if (!isNullOrUndefined(hooks.willDetach)) {
+					hooks.willDetach(node.dom);
+				}
+				if (!isNullOrUndefined(hooks.componentWillUnmount)) {
+					hooks.componentWillUnmount(node.dom, hooks);
+				}
+			}
+			var children = node.children || instanceChildren;
+			if (!isNullOrUndefined(children)) {
+				if (isArray(children)) {
+					for (var i = 0; i < children.length; i++) {
+						detachNode(children[i]);
+					}
+				} else {
+					detachNode(children);
+				}
+			}
+		}
+
+		function createEmptyTextNode() {
+			return document.createTextNode('');
+		}
+
+		function remove(node, parentDom) {
+			var dom = node.dom;
+			if (dom === parentDom) {
+				dom.innerHTML = '';
+			} else {
+				parentDom.removeChild(dom);
+				if (recyclingEnabled) {
+					pool(node);
+				}
+			}
+			detachNode(node);
+		}
+
+		function removeEvents(events, lastEventKeys, dom) {
+			var eventKeys = lastEventKeys || Object.keys(events);
+
+			for (var i = 0; i < eventKeys.length; i++) {
+				var event = eventKeys[i];
+
+				dom[event] = null;
+			}
+		}
+
+		function insertChildren(parentNode, childNodes, dom) {
+			// we need to append all childNodes now
+			for (var i = 0; i < childNodes.length; i++) {
+				parentNode.insertBefore(childNodes[i], dom);
+			}
+		}
+
+		// TODO: for node we need to check if document is valid
+		function getActiveNode() {
+			return document.activeElement;
+		}
+
+		function removeAllChildren(dom, children) {
+			if (recyclingEnabled) {
+				var childrenLength = children.length;
+
+				if (childrenLength > 5) {
+					for (var i = 0; i < childrenLength; i++) {
+						var child = children[i];
+
+						if (!isInvalidNode(child)) {
+							pool(child);
+						}
+					}
+				}
+			}
+			dom.textContent = '';
+		}
+
+		function resetActiveNode(activeNode) {
+			if (activeNode !== document.body && document.activeElement !== activeNode) {
+				activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
+			}
+		}
+
+		function createVirtualFragment() {
+			var childNodes = [];
+			var dom = document.createTextNode('');
+			var parentNode = null;
+
+			var fragment = {
+				dom: dom,
+				childNodes: childNodes,
+				appendChild: function appendChild(domNode) {
+					// TODO we need to check if the domNode already has a parentNode of VirtualFragment so we can remove it
+					childNodes.push(domNode);
+					if (parentNode) {
+						parentNode.insertBefore(domNode, dom);
+					}
+				},
+				removeChild: function removeChild(domNode) {
+					if (parentNode) {
+						parentNode.removeChild(domNode);
+					}
+					childNodes.splice(childNodes.indexOf(domNode), 1);
+				},
+				insertBefore: function insertBefore(domNode, refNode) {
+					if (parentNode) {
+						parentNode.insertBefore(domNode, refNode);
+					}
+					childNodes.splice(childNodes.indexOf(refNode), 0, domNode);
+				},
+				replaceChild: function replaceChild(domNode, refNode) {
+					parentNode.replaceChild(domNode, refNode);
+					replaceInArray(childNodes, refNode, domNode);
+				},
+				append: function append(parentDom) {
+					parentDom.appendChild(dom);
+					parentNode = parentDom;
+					insertChildren(parentNode, childNodes, dom);
+				},
+				insert: function insert(parentDom, refNode) {
+					parentDom.insertBefore(dom, refNode);
+					parentNode = parentDom;
+					insertChildren(parentNode, childNodes, dom);
+				},
+				remove: function remove() {
+					parentNode.removeChild(dom);
+					for (var i = 0; i < childNodes.length; i++) {
+						parentNode.removeChild(childNodes[i]);
+					}
+					parentNode = null;
+				},
+				replaceWith: function replaceWith(newNode) {
+					parentNode.replaceChild(newNode, dom);
+					for (var i = 0; i < childNodes.length; i++) {
+						parentNode.removeChild(childNodes[i]);
+					}
+					parentNode = null;
+				},
+
+				// here to emulate not being a TextNode
+				getElementsByTagName: null
+			};
+
+			Object.defineProperty(fragment, 'parentNode', {
+				get: function get() {
+					return parentNode;
+				}
+			});
+			Object.defineProperty(fragment, 'firstChild', {
+				get: function get() {
+					return childNodes[0];
+				}
+			});
+
+			return fragment;
+		}
+
+		function isKeyed(lastChildren, nextChildren) {
+			return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
+		}
+
+		function selectOptionValueIfNeeded(vdom, values) {
+			if (vdom.tag !== 'option') {
+				for (var i = 0, len = vdom.children.length; i < len; i++) {
+					selectOptionValueIfNeeded(vdom.children[i], values);
+				}
+				// NOTE! Has to be a return here to catch optGroup elements
+				return;
+			}
+
+			var value = vdom.attrs && vdom.attrs.value;
+
+			if (values[value]) {
+				vdom.attrs = vdom.attrs || {};
+				vdom.attrs.selected = 'selected';
+				vdom.dom.selected = true;
+			} else {
+				vdom.dom.selected = false;
+			}
+		}
+
+		function selectValue(vdom) {
+			var value = vdom.attrs && vdom.attrs.value;
+
+			var values = {};
+			if (isArray(value)) {
+				for (var i = 0, len = value.length; i < len; i++) {
+					values[value[i]] = value[i];
+				}
+			} else {
+				values[value] = value;
+			}
+			for (var _i = 0, _len = vdom.children.length; _i < _len; _i++) {
+				selectOptionValueIfNeeded(vdom.children[_i], values);
+			}
+
+			if (vdom.attrs && vdom.attrs[value]) {
+				delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
+			}
+		}
+		function placeholder(node, parentDom) {
+			var dom = createEmptyTextNode();
+
+			if (parentDom !== null) {
+				parentDom.appendChild(dom);
+			}
+			if (!isInvalidNode(node)) {
+				node.dom = dom;
+			}
+			return dom;
+		}
+
+		function handleAttachedHooks(hooks, lifecycle, dom) {
+			if (!isNullOrUndefined(hooks.created)) {
+				hooks.created(dom);
+			}
+			if (!isNullOrUndefined(hooks.attached)) {
+				lifecycle.addListener(function () {
+					hooks.attached(dom);
+				});
+			}
+		}
+
+		function setValueProperty(nextNode) {
+			var value = nextNode.attrs.value;
+			if (!isNullOrUndefined(value)) {
+				nextNode.dom.value = value;
+			}
+		}
+
+		function setFormElementProperties(nextTag, nextNode) {
+			if (nextTag === 'input') {
+				var inputType = nextNode.attrs.type;
+				if (inputType === 'text') {
+					setValueProperty(nextNode);
+				} else if (inputType === 'checkbox' || inputType === 'radio') {
+					var checked = nextNode.attrs.checked;
+					nextNode.dom.checked = !!checked;
+				}
+			} else if (nextTag === 'textarea') {
+				setValueProperty(nextNode);
+			}
+		}
+
+		function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG) {
+			var nextChildren = nextNode.children;
+			var lastChildren = lastNode.children;
+
+			if (lastChildren === nextChildren) {
+				return;
+			}
+
+			var domChildren = null;
+
+			if (lastNode.domChildren) {
+				domChildren = nextNode.domChildren = lastNode.domChildren;
+			}
+			if (isInvalidNode(lastChildren)) {
+				if (isStringOrNumber(nextChildren)) {
+					updateTextNode(dom, lastChildren, nextChildren);
+				} else if (!isNullOrUndefined(nextChildren)) {
+					if (isArray(nextChildren)) {
+						mountArrayChildren(nextNode, nextChildren, dom, lifecycle, context, instance, isSVG);
+					} else {
+						mount(nextChildren, dom, lifecycle, context, instance, isSVG);
+					}
+				}
+			} else {
+				if (isInvalidNode(nextChildren)) {
+					removeAllChildren(dom, lastChildren);
+				} else {
+					if (isArray(lastChildren)) {
+						if (isArray(nextChildren)) {
+							if (domChildren === null && lastChildren.length > 1) {
+								patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
+							} else {
+								if (isKeyed(lastChildren, nextChildren)) {
+									patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
+								} else {
+									patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || (nextNode.domChildren = []), lifecycle, context, instance, 0, isSVG);
+								}
+							}
+						} else {
+							patchNonKeyedChildren(lastChildren, [nextChildren], dom, domChildren || [], lifecycle, context, instance, 0);
+						}
+					} else {
+						if (isArray(nextChildren)) {
+							patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || (nextNode.domChildren = [dom.firstChild]), lifecycle, context, instance, 0, isSVG);
+						} else if (isStringOrNumber(nextChildren)) {
+							updateTextNode(dom, lastChildren, nextChildren);
+						} else if (isStringOrNumber(lastChildren)) {
+							patch(lastChildren, nextChildren, dom, lifecycle, context, instance, null, isSVG);
+						} else {
+							patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, isSVG);
+						}
+					}
+				}
+			}
+		}
+
+		function diffRef(instance, lastValue, nextValue, dom) {
+			if (instance) {
+				if (isString(lastValue)) {
+					delete instance.refs[lastValue];
+				}
+				if (isString(nextValue)) {
+					instance.refs[nextValue] = dom;
+				}
+			}
+		}
+
+		function diffEvents(lastNode, nextNode, lastEventKeys, nextEventKeys, dom) {
+			var nextEvents = nextNode.events;
+			var lastEvents = lastNode.events;
+			var nextEventsDefined = !isNullOrUndefined(nextEvents);
+			var lastEventsDefined = !isNullOrUndefined(lastEvents);
+
+			if (nextEventsDefined) {
+				if (lastEventsDefined) {
+					patchEvents(lastEvents, nextEvents, lastEventKeys, nextEventKeys, dom);
+				} else {
+					mountEvents(nextEvents, nextEventKeys, dom);
+				}
+			} else if (lastEventsDefined) {
+				removeEvents(lastEvents, lastEventKeys, dom);
+			}
+		}
+
+		function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, instance) {
+			if (lastNode.tag === 'select') {
+				selectValue(nextNode);
+			}
+			var nextAttrs = nextNode.attrs;
+			var lastAttrs = lastNode.attrs;
+			var nextAttrsIsUndef = isNullOrUndefined(nextAttrs);
+			var lastAttrsIsNotUndef = !isNullOrUndefined(lastAttrs);
+
+			if (!nextAttrsIsUndef) {
+				var nextAttrsKeys = nextAttrKeys || Object.keys(nextAttrs);
+				var attrKeysLength = nextAttrsKeys.length;
+
+				for (var i = 0; i < attrKeysLength; i++) {
+					var attr = nextAttrsKeys[i];
+					var lastAttrVal = lastAttrsIsNotUndef && lastAttrs[attr];
+					var nextAttrVal = nextAttrs[attr];
+
+					if (lastAttrVal !== nextAttrVal) {
+						if (attr === 'ref') {
+							diffRef(instance, lastAttrVal, nextAttrVal, dom);
+						} else {
+							patchAttribute(attr, nextAttrVal, dom);
+						}
+					}
+				}
+			}
+			if (lastAttrsIsNotUndef) {
+				var lastAttrsKeys = lastAttrKeys || Object.keys(lastAttrs);
+				var _attrKeysLength = lastAttrsKeys.length;
+
+				for (var _i = 0; _i < _attrKeysLength; _i++) {
+					var _attr = lastAttrsKeys[_i];
+
+					if (nextAttrsIsUndef || isNullOrUndefined(nextAttrs[_attr])) {
+						if (_attr === 'ref') {
+							diffRef(instance, lastAttrs[_attr], null, dom);
+						} else {
+							dom.removeAttribute(_attr);
+						}
+					}
+				}
+			}
+		}
+
+		function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
+			var nextHooks = void 0;
+
+			if (nextNode.hasHooks === true) {
+				/* eslint no-cond-assign:0 */
+				if (nextHooks = nextNode.hooks && !isNullOrUndefined(nextHooks.willUpdate)) {
+					nextHooks.willUpdate(lastNode.dom);
+				}
+			}
+			var nextTag = nextNode.tag || nextBp.tag;
+			var lastTag = lastNode.tag || lastBp.tag;
+
+			if (lastTag !== nextTag) {
+				if (lastBp.isComponent === true) {
+					var lastNodeInstance = lastNode.instance;
+
+					if (nextBp.isComponent === true) {
+						replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, false);
+						detachNode(lastNode);
+					} else if (isStatefulComponent(lastTag)) {
+						diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
+					} else {
+						diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
+					}
+				} else {
+					replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
+				}
+			} else if (isNullOrUndefined(lastTag)) {
+				nextNode.dom = lastNode.dom;
+			} else {
+				if (lastBp.isComponent === true) {
+					if (nextBp.isComponent === true) {
+						var _instance = lastNode.instance;
+
+						if (!isNullOrUndefined(_instance) && _instance._unmounted) {
+							var newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, _instance, parentDom, lifecycle, context);
+							if (parentDom !== null) {
+								replaceNode(parentDom, newDom, lastNode.dom);
+							}
+						} else {
+							nextNode.instance = _instance;
+							nextNode.dom = lastNode.dom;
+							patchComponent(true, nextNode, nextNode.tag, lastBp, nextBp, _instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+						}
+					}
+				} else {
+					var dom = lastNode.dom;
+					var lastChildrenType = lastBp.childrenType;
+					var nextChildrenType = nextBp.childrenType;
+					nextNode.dom = dom;
+
+					if (nextBp.lazy === true && skipLazyCheck === false) {
+						var clipData = lastNode.clipData;
+
+						if (lifecycle.scrollY === null) {
+							lifecycle.refresh();
+						}
+
+						nextNode.clipData = clipData;
+						if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
+							if (setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle)) {
+								return;
+							}
+						}
+						if (clipData.bottom < lifecycle.scrollY) {
+							if (setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle)) {
+								return;
+							}
+						}
+					}
+
+					if (lastChildrenType > 0 || nextChildrenType > 0) {
+						if (nextChildrenType === 5 || lastChildrenType === 5) {
+							diffChildren(lastNode, nextNode, dom, lifecycle, context, instance);
+						} else {
+							var lastChildren = lastNode.children;
+							var nextChildren = nextNode.children;
+
+							if (lastChildrenType === 0 || isInvalidNode(lastChildren)) {
+								if (nextChildrenType > 2) {
+									mountArrayChildren(nextNode, nextChildren, dom, lifecycle, context, instance);
+								} else {
+									mount(nextChildren, dom, lifecycle, context, instance);
+								}
+							} else if (nextChildrenType === 0 || isInvalidNode(nextChildren)) {
+								if (lastChildrenType > 2) {
+									removeAllChildren(dom, lastChildren);
+								} else {
+									remove(lastChildren, dom);
+								}
+							} else {
+								if (lastChildren !== nextChildren) {
+									if (lastChildrenType === 4 && nextChildrenType === 4) {
+										patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance);
+									} else if (lastChildrenType === 2 && nextChildrenType === 2) {
+										patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, false);
+									} else if (lastChildrenType === 1 && nextChildrenType === 1) {
+										updateTextNode(dom, lastChildren, nextChildren);
+									} else {
+										diffChildren(lastNode, nextNode, dom, lifecycle, context, instance);
+									}
+								}
+							}
+						}
+					}
+					if (lastBp.hasAttrs === true || nextBp.hasAttrs === true) {
+						diffAttributes(lastNode, nextNode, lastBp.attrKeys, nextBp.attrKeys, dom, instance);
+					}
+					if (lastBp.hasEvents === true || nextBp.hasEvents === true) {
+						diffEvents(lastNode, nextNode, lastBp.eventKeys, nextBp.eventKeys, dom);
+					}
+					if (lastBp.hasClassName === true || nextBp.hasClassName === true) {
+						var nextClassName = nextNode.className;
+
+						if (lastNode.className !== nextClassName) {
+							if (isNullOrUndefined(nextClassName)) {
+								dom.removeAttribute('class');
+							} else {
+								dom.className = nextClassName;
+							}
+						}
+					}
+					if (lastBp.hasStyle === true || nextBp.hasStyle === true) {
+						var nextStyle = nextNode.style;
+
+						if (lastNode.style !== nextStyle) {
+							patchStyle(lastNode.style, nextStyle, dom);
+						}
+					}
+					if (nextNode.hasHooks === true && !isNullOrUndefined(nextHooks.didUpdate)) {
+						nextHooks.didUpdate(dom);
+					}
+					setFormElementProperties(nextTag, nextNode);
+				}
+			}
+		}
+
+		function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
+			if (isPromise(nextNode)) {
+				nextNode.then(function (node) {
+					patch(lastNode, node, parentDom, lifecycle, context, instance, null, false);
+				});
+			} else {
+				var nextHooks = nextNode.hooks;
+				var nextHooksDefined = !isNullOrUndefined(nextHooks);
+
+				if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
+					nextHooks.willUpdate(lastNode.dom);
+				}
+				var nextTag = nextNode.tag || (isNullOrUndefined(nextNode.bp) ? null : nextNode.bp.tag);
+				var lastTag = lastNode.tag || (isNullOrUndefined(lastNode.bp) ? null : lastNode.bp.tag);
+
+				if (nextTag === 'svg') {
+					isSVG = true;
+				}
+
+				if (lastTag !== nextTag) {
+					var lastNodeInstance = lastNode.instance;
+
+					if (isFunction(lastTag)) {
+						if (isFunction(nextTag)) {
+							replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+						} else if (isStatefulComponent(lastTag)) {
+							diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+						} else {
+							diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG);
+						}
+					} else {
+						replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+					}
+				} else if (isNullOrUndefined(lastTag)) {
+					nextNode.dom = lastNode.dom;
+				} else {
+					if (isFunction(lastTag)) {
+						if (isFunction(nextTag)) {
+							var _instance2 = lastNode._instance;
+
+							if (!isNullOrUndefined(_instance2) && _instance2._unmounted) {
+								var newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, _instance2, parentDom, lifecycle, context);
+								if (parentDom !== null) {
+									replaceNode(parentDom, newDom, lastNode.dom);
+								}
+							} else {
+								nextNode.instance = lastNode.instance;
+								nextNode.dom = lastNode.dom;
+								patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+							}
+						}
+					} else {
+						var dom = lastNode.dom;
+						var nextClassName = nextNode.className;
+						var nextStyle = nextNode.style;
+
+						nextNode.dom = dom;
+
+						diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG);
+						diffAttributes(lastNode, nextNode, null, null, dom, instance);
+						diffEvents(lastNode, nextNode, null, null, dom);
+
+						if (lastNode.className !== nextClassName) {
+							if (isNullOrUndefined(nextClassName)) {
+								dom.removeAttribute('class');
+							} else {
+								dom.className = nextClassName;
+							}
+						}
+						if (lastNode.style !== nextStyle) {
+							patchStyle(lastNode.style, nextStyle, dom);
+						}
+						if (nextHooksDefined && !isNullOrUndefined(nextHooks.didUpdate)) {
+							nextHooks.didUpdate(dom);
+						}
+						setFormElementProperties(nextTag, nextNode);
+					}
+				}
+			}
+		}
+
+		function constructDefaults(string, object, value) {
+			/* eslint no-return-assign: 0 */
+			string.split(',').forEach(function (i) {
+				return object[i] = value;
+			});
+		}
+
+		var xlinkNS = 'http://www.w3.org/1999/xlink';
+		var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+		var strictProps = {};
+		var booleanProps = {};
+		var namespaces = {};
+
+		constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+		constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+		constructDefaults('volume,value', strictProps, true);
+		constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+
+		function updateTextNode(dom, lastChildren, nextChildren) {
+			if (isStringOrNumber(lastChildren)) {
+				dom.firstChild.nodeValue = nextChildren;
+			} else {
+				dom.textContent = nextChildren;
+			}
+		}
+
+		function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, skipLazyCheck) {
+			var lastBp = lastNode.bp;
+			var nextBp = nextNode.bp;
+
+			if (lastBp === void 0 || nextBp === void 0) {
+				diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+			} else {
+				diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck);
+			}
+		}
+
+		function patch(lastInput, nextInput, parentDom, lifecycle, context, instance, isNode, isSVG) {
+			if (isNode !== null) {
+				patchNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
+			} else if (isInvalidNode(lastInput)) {
+				mount(nextInput, parentDom, lifecycle, context, instance, isSVG);
+			} else if (isInvalidNode(nextInput)) {
+				remove(lastInput, parentDom);
+			} else if (isStringOrNumber(lastInput)) {
+				if (isStringOrNumber(nextInput)) {
+					parentDom.firstChild.nodeValue = nextInput;
+				} else {
+					var dom = mount(nextInput, null, lifecycle, context, instance, isSVG);
+					nextInput.dom = dom;
+					replaceNode(parentDom, dom, parentDom.firstChild);
+				}
+			} else if (isStringOrNumber(nextInput)) {
+				var textNode = document.createTextNode(nextInput);
+				replaceNode(parentDom, textNode, lastInput.dom);
+			} else {
+				patchNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
+			}
+		}
+
+		function patchStyle(lastAttrValue, nextAttrValue, dom) {
+			if (isString(nextAttrValue)) {
+				dom.style.cssText = nextAttrValue;
+			} else if (isNullOrUndefined(lastAttrValue)) {
+				if (!isNullOrUndefined(nextAttrValue)) {
+					var styleKeys = Object.keys(nextAttrValue);
+
+					for (var i = 0; i < styleKeys.length; i++) {
+						var style = styleKeys[i];
+
+						dom.style[style] = nextAttrValue[style];
+					}
+				}
+			} else if (isNullOrUndefined(nextAttrValue)) {
+				dom.removeAttribute('style');
+			} else {
+				var _styleKeys = Object.keys(nextAttrValue);
+
+				for (var _i = 0; _i < _styleKeys.length; _i++) {
+					var _style = _styleKeys[_i];
+
+					dom.style[_style] = nextAttrValue[_style];
+				}
+				// TODO: possible optimization could be we remove all and add all from nextKeys then we can skip this obj loop
+				// TODO: needs performance benchmark
+				var lastStyleKeys = Object.keys(lastAttrValue);
+
+				for (var _i2 = 0; _i2 < lastStyleKeys.length; _i2++) {
+					var _style2 = lastStyleKeys[_i2];
+					if (isNullOrUndefined(nextAttrValue[_style2])) {
+						dom.style[_style2] = '';
+					}
+				}
+			}
+		}
+
+		function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKeys, dom) {
+			var nextEventKeys = _nextEventKeys || Object.keys(nextEvents);
+
+			for (var i = 0; i < nextEventKeys.length; i++) {
+				var event = nextEventKeys[i];
+				var lastEvent = lastEvents[event];
+				var nextEvent = nextEvents[event];
+
+				if (lastEvent !== nextEvent) {
+					dom[event] = nextEvent;
+				}
+			}
+			var lastEventKeys = _lastEventKeys || Object.keys(lastEvents);
+
+			for (var _i3 = 0; _i3 < lastEventKeys.length; _i3++) {
+				var _event = lastEventKeys[_i3];
+
+				if (isNullOrUndefined(nextEvents[_event])) {
+					dom[_event] = null;
+				}
+			}
+		}
+
+		function patchAttribute(attrName, nextAttrValue, dom) {
+			if (strictProps[attrName]) {
+				dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
+			} else {
+				if (booleanProps[attrName]) {
+					dom[attrName] = nextAttrValue ? true : false;
+				} else {
+					var ns = namespaces[attrName];
+
+					if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
+						if (ns !== void 0) {
+							dom.removeAttributeNS(ns, attrName);
+						} else {
+							dom.removeAttribute(attrName);
+						}
+					} else {
+						if (ns !== void 0) {
+							dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
+						} else {
+							dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+						}
+					}
+				}
+			}
+		}
+
+		function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+			nextProps = addChildrenToProps(nextChildren, nextProps);
+
+			if (isStatefulComponent(Component)) {
+				var prevProps = instance.props;
+				var prevState = instance.state;
+				var nextState = instance.state;
+
+				var childContext = instance.getChildContext();
+				if (!isNullOrUndefined(childContext)) {
+					context = babelHelpers.extends({}, context, childContext);
+				}
+				instance.context = context;
+				var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
+
+				if (!isInvalidNode(nextNode)) {
+					patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
+					lastNode.dom = nextNode.dom;
+				}
+				instance._lastNode = nextNode;
+			} else {
+				var shouldUpdate = true;
+				var nextHooksDefined = hasTemplate && nextBp.hasHooks === true || !isNullOrUndefined(nextHooks);
+
+				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
+					shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
+				}
+				if (shouldUpdate !== false) {
+					if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
+						nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
+					}
+
+					var _nextNode = Component(nextProps);
+
+					if (!isInvalidNode(_nextNode)) {
+						_nextNode.dom = lastNode.dom;
+						patch(instance, _nextNode, parentDom, lifecycle, context, null, null, false);
+						lastNode.instance = _nextNode;
+						if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
+							nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
+						}
+					}
+				}
+			}
+		}
+
+		function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren, lifecycle, context, instance, domChildrenIndex, isSVG) {
+			var isNotVirtualFragment = dom.append === void 0;
+			var lastChildrenLength = lastChildren.length;
+			var nextChildrenLength = nextChildren.length;
+			var sameLength = lastChildrenLength === nextChildrenLength;
+
+			if (sameLength === false) {
+				if (lastChildrenLength > nextChildrenLength) {
+					while (lastChildrenLength !== nextChildrenLength) {
+						var lastChild = lastChildren[lastChildrenLength - 1];
+
+						if (!isInvalidNode(lastChild)) {
+							dom.removeChild(domChildren[lastChildrenLength - 1 + domChildrenIndex]);
+							if (isNotVirtualFragment) {
+								domChildren.splice(lastChildrenLength - 1 + domChildrenIndex, 1);
+							}
+							detachNode(lastChild);
+							lastChildrenLength--;
+							lastChildren.pop();
+						}
+					}
+				} else {
+					while (lastChildrenLength !== nextChildrenLength) {
+						var nextChild = nextChildren[lastChildrenLength];
+						var domNode = void 0;
+
+						lastChildren.push(nextChild);
+						if (isStringOrNumber(nextChild)) {
+							domNode = document.createTextNode(nextChild);
+						} else {
+							domNode = mount(nextChild, null, context, instance, isSVG);
+						}
+
+						if (!isInvalidNode(domNode)) {
+							insertOrAppendNonKeyed(dom, domNode);
+						}
+						if (isNotVirtualFragment) {
+							if (lastChildrenLength === 1) {
+								domChildren.push(dom.firstChild);
+							}
+							isNotVirtualFragment && domChildren.splice(lastChildrenLength + domChildrenIndex, 0, domNode);
+						}
+						lastChildrenLength++;
+					}
+				}
+			}
+			for (var i = 0; i < nextChildrenLength; i++) {
+				var _lastChild = lastChildren[i];
+				var _nextChild = nextChildren[i];
+				var index = i + domChildrenIndex;
+
+				if (_lastChild !== _nextChild) {
+					if (isInvalidNode(_nextChild)) {
+						if (!isInvalidNode(_lastChild)) {
+							if (isArray(_lastChild) && _lastChild.length === 0) {
+								for (var j = 0; j < _lastChild.length; j++) {
+									remove(_lastChild[j], dom);
+								}
+							} else {
+								var childNode = domChildren[index];
+
+								if (isNullOrUndefined(childNode)) {
+									index--;
+								}
+								dom.removeChild(domChildren[index]);
+								if (isNotVirtualFragment) {
+									domChildren.splice(index, 1);
+									domChildrenIndex--;
+								}
+								detachNode(_lastChild);
+							}
+						}
+					} else {
+						if (isInvalidNode(_lastChild)) {
+							if (isStringOrNumber(_nextChild)) {
+								var textNode = document.createTextNode(_nextChild);
+								var domChild = domChildren[index];
+
+								if (isNullOrUndefined(domChild)) {
+									// TODO move to next node if need be
+									var _nextChild2 = domChildren[index + 1];
+									insertOrAppendNonKeyed(dom, textNode, _nextChild2);
+									isNotVirtualFragment && domChildren.splice(index, 1, textNode);
+								} else {
+									insertOrAppendNonKeyed(dom, textNode, domChild);
+									isNotVirtualFragment && domChildren.splice(index, 0, textNode);
+								}
+							} else {
+								var _domNode = mount(_nextChild, null, lifecycle, context, instance, isSVG);
+								var _domChild = domChildren[index];
+
+								if (isNullOrUndefined(_domChild)) {
+									// TODO move to next node if need be
+									var _nextChild3 = domChildren[index + 1];
+									insertOrAppendNonKeyed(dom, _domNode, _nextChild3);
+									isNotVirtualFragment && domChildren.splice(index, 1, _domNode);
+								} else {
+									insertOrAppendNonKeyed(dom, _domNode, _domChild);
+									isNotVirtualFragment && domChildren.splice(index, 0, _domNode);
+								}
+							}
+						} else if (isStringOrNumber(_nextChild)) {
+							if (lastChildrenLength === 1) {
+								if (isStringOrNumber(_lastChild)) {
+									if (dom.getElementsByTagName === void 0) {
+										dom.nodeValue = _nextChild;
+									} else {
+										dom.firstChild.nodeValue = _nextChild;
+									}
+								} else {
+									detachNode(_lastChild);
+									dom.textContent = _nextChild;
+								}
+							} else {
+								var _textNode = document.createTextNode(_nextChild);
+								var child = domChildren[index];
+
+								if (isNullOrUndefined(child)) {
+									dom.nodeValue = _textNode.nodeValue;
+								} else {
+									if (isStringOrNumber(_lastChild)) {
+										child.nodeValue = _nextChild;
+									} else {
+										// Next is single string so remove all children
+										if (child.append === void 0) {
+											isNotVirtualFragment && domChildren.splice(index, 1, _textNode);
+											replaceNode(dom, _textNode, child);
+										} else {
+											// If previous child is virtual fragment remove all its content and replace with textNode
+											insertOrAppendNonKeyed(dom, _textNode, child.firstChild);
+											child.remove();
+											domChildren.splice(0, domChildren.length, _textNode);
+										}
+									}
+								}
+								detachNode(_lastChild);
+							}
+						} else if (isArray(_nextChild)) {
+							if (isKeyed(_lastChild, _nextChild)) {
+								patchKeyedChildren(_lastChild, _nextChild, domChildren[index], lifecycle, context, instance, isSVG);
+							} else {
+								if (isArray(_lastChild)) {
+									var _domChild2 = domChildren[index];
+
+									if (_domChild2.append === void 0) {
+										if (_nextChild.length > 1 && _lastChild.length === 1) {
+											var virtualFragment = createVirtualFragment();
+
+											virtualFragment.insert(dom, _domChild2);
+											virtualFragment.appendChild(_domChild2);
+											isNotVirtualFragment && domChildren.splice(index, 1, virtualFragment);
+											patchNonKeyedChildren(_lastChild, _nextChild, virtualFragment, virtualFragment.childNodes, lifecycle, context, instance, 0, isSVG);
+										} else {
+											patchNonKeyedChildren(_lastChild, _nextChild, dom, domChildren, lifecycle, context, instance, 0, isSVG);
+										}
+									} else {
+										patchNonKeyedChildren(_lastChild, _nextChild, domChildren[index], domChildren[index].childNodes, lifecycle, context, instance, 0, isSVG);
+									}
+								} else {
+									if (_nextChild.length > 1) {
+										var _virtualFragment = createVirtualFragment();
+										_virtualFragment.appendChild(dom.firstChild);
+										insertOrAppendNonKeyed(dom, _virtualFragment, dom.firstChild);
+										isNotVirtualFragment && domChildren.splice(index, 1, _virtualFragment);
+										patchNonKeyedChildren([_lastChild], _nextChild, _virtualFragment, _virtualFragment.childNodes, lifecycle, context, instance, i, isSVG);
+									} else {
+										patchNonKeyedChildren([_lastChild], _nextChild, dom, domChildren, lifecycle, context, instance, i, isSVG);
+									}
+								}
+							}
+						} else {
+							if (isArray(_lastChild)) {
+								patchNonKeyedChildren(_lastChild, [_nextChild], domChildren, domChildren[index].childNodes, lifecycle, context, instance, 0, isSVG);
+							} else {
+								patch(_lastChild, _nextChild, dom, lifecycle, context, instance, null, isSVG);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG) {
+			var lastChildrenLength = lastChildren.length;
+			var nextChildrenLength = nextChildren.length;
+			var i = void 0;
+			var lastEndIndex = lastChildrenLength - 1;
+			var nextEndIndex = nextChildrenLength - 1;
+			var lastStartIndex = 0;
+			var nextStartIndex = 0;
+			var lastStartNode = null;
+			var nextStartNode = null;
+			var nextEndNode = null;
+			var lastEndNode = null;
+			var index = void 0;
+			var nextNode = void 0;
+			var lastTarget = 0;
+			var pos = void 0;
+			var prevItem = void 0;
+
+			while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
+				nextStartNode = nextChildren[nextStartIndex];
+				lastStartNode = lastChildren[lastStartIndex];
+
+				if (nextStartNode.key !== lastStartNode.key) {
+					break;
+				}
+
+				patch(lastStartNode, nextStartNode, dom, lifecycle, context, instance, true, isSVG);
+				nextStartIndex++;
+				lastStartIndex++;
+			}
+
+			while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
+				nextEndNode = nextChildren[nextEndIndex];
+				lastEndNode = lastChildren[lastEndIndex];
+
+				if (nextEndNode.key !== lastEndNode.key) {
+					break;
+				}
+
+				patch(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
+				nextEndIndex--;
+				lastEndIndex--;
+			}
+
+			while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
+				nextEndNode = nextChildren[nextEndIndex];
+				lastStartNode = lastChildren[lastStartIndex];
+
+				if (nextEndNode.key !== lastStartNode.key) {
+					break;
+				}
+
+				nextNode = nextEndIndex + 1 < nextChildrenLength ? nextChildren[nextEndIndex + 1].dom : null;
+				patch(lastStartNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
+				insertOrAppendKeyed(dom, nextEndNode.dom, nextNode);
+				nextEndIndex--;
+				lastStartIndex++;
+			}
+
+			while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
+				nextStartNode = nextChildren[nextStartIndex];
+				lastEndNode = lastChildren[lastEndIndex];
+
+				if (nextStartNode.key !== lastEndNode.key) {
+					break;
+				}
+
+				nextNode = lastChildren[lastStartIndex].dom;
+				patch(lastEndNode, nextStartNode, dom, lifecycle, context, instance, true, isSVG);
+				insertOrAppendKeyed(dom, nextStartNode.dom, nextNode);
+				nextStartIndex++;
+				lastEndIndex--;
+			}
+
+			if (lastStartIndex > lastEndIndex) {
+				if (nextStartIndex <= nextEndIndex) {
+					nextNode = nextEndIndex + 1 < nextChildrenLength ? nextChildren[nextEndIndex + 1].dom : null;
+					for (; nextStartIndex <= nextEndIndex; nextStartIndex++) {
+						insertOrAppendKeyed(dom, mount(nextChildren[nextStartIndex], null, lifecycle, context, instance, isSVG), nextNode);
+					}
+				}
+			} else if (nextStartIndex > nextEndIndex) {
+				while (lastStartIndex <= lastEndIndex) {
+					remove(lastChildren[lastStartIndex++], dom);
+				}
+			} else {
+				var aLength = lastEndIndex - lastStartIndex + 1;
+				var bLength = nextEndIndex - nextStartIndex + 1;
+				var sources = new Array(bLength);
+
+				// Mark all nodes as inserted.
+				for (i = 0; i < bLength; i++) {
+					sources[i] = -1;
+				}
+
+				var moved = false;
+				var removeOffset = 0;
+
+				if (aLength * bLength <= 16) {
+					for (i = lastStartIndex; i <= lastEndIndex; i++) {
+						var removed = true;
+						lastEndNode = lastChildren[i];
+						for (index = nextStartIndex; index <= nextEndIndex; index++) {
+							nextEndNode = nextChildren[index];
+							if (lastEndNode.key === nextEndNode.key) {
+								sources[index - nextStartIndex] = i;
+
+								if (lastTarget > index) {
+									moved = true;
+								} else {
+									lastTarget = index;
+								}
+								patch(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
+								removed = false;
+								break;
+							}
+						}
+						if (removed) {
+							remove(lastEndNode, dom);
+							removeOffset++;
+						}
+					}
+				} else {
+
+					var prevItemsMap = new Map();
+
+					for (i = nextStartIndex; i <= nextEndIndex; i++) {
+						prevItem = nextChildren[i];
+						prevItemsMap.set(prevItem.key, i);
+					}
+
+					for (i = lastEndIndex; i >= lastStartIndex; i--) {
+						lastEndNode = lastChildren[i];
+						index = prevItemsMap.get(lastEndNode.key);
+
+						if (index === void 0) {
+							remove(lastEndNode, dom);
+							removeOffset++;
+						} else {
+							nextEndNode = nextChildren[index];
+
+							sources[index - nextStartIndex] = i;
+							if (lastTarget > index) {
+								moved = true;
+							} else {
+								lastTarget = index;
+							}
+							patch(lastEndNode, nextEndNode, dom, lifecycle, context, instance, true, isSVG);
+						}
+					}
+				}
+
+				if (moved) {
+					var seq = lis_algorithm(sources);
+					index = seq.length - 1;
+					for (i = bLength - 1; i >= 0; i--) {
+						if (sources[i] === -1) {
+							pos = i + nextStartIndex;
+							nextNode = pos + 1 < nextChildrenLength ? nextChildren[pos + 1].dom : null;
+							insertOrAppendKeyed(dom, mount(nextChildren[pos], null, lifecycle, context, instance, isSVG), nextNode);
+						} else {
+							if (index < 0 || i !== seq[index]) {
+								pos = i + nextStartIndex;
+								nextNode = pos + 1 < nextChildrenLength ? nextChildren[pos + 1].dom : null;
+								insertOrAppendKeyed(dom, nextChildren[pos].dom, nextNode);
+							} else {
+								index--;
+							}
+						}
+					}
+				} else if (aLength - removeOffset !== bLength) {
+					for (i = bLength - 1; i >= 0; i--) {
+						if (sources[i] === -1) {
+							pos = i + nextStartIndex;
+							nextNode = pos + 1 < nextChildrenLength ? nextChildren[pos + 1].dom : null;
+							insertOrAppendKeyed(dom, mount(nextChildren[pos], null, lifecycle, context, instance, isSVG), nextNode);
+						}
+					}
+				}
+			}
+		}
+
+		// https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+		function lis_algorithm(a) {
+			var p = a.slice(0);
+			var result = [];
+			result.push(0);
+			var i = void 0;
+			var j = void 0;
+			var u = void 0;
+			var v = void 0;
+			var c = void 0;
+
+			for (i = 0; i < a.length; i++) {
+				if (a[i] === -1) {
+					continue;
+				}
+
+				j = result[result.length - 1];
+				if (a[j] < a[i]) {
+					p[i] = j;
+					result.push(i);
+					continue;
+				}
+
+				u = 0;
+				v = result.length - 1;
+
+				while (u < v) {
+					c = (u + v) / 2 | 0;
+					if (a[result[c]] < a[i]) {
+						u = c + 1;
+					} else {
+						v = c;
+					}
+				}
+
+				if (a[i] < a[result[u]]) {
+					if (u > 0) {
+						p[i] = result[u - 1];
+					}
+					result[u] = i;
+				}
+			}
+
+			u = result.length;
+			v = result[u - 1];
+
+			while (u-- > 0) {
+				result[u] = v;
+				v = p[v];
+			}
+
+			return result;
+		}
+
+		var screenWidth = window.screen.width;
+		var screenHeight = window.screen.height;
+		var scrollX = 0;
+		var scrollY = 0;
+		var lastScrollTime = 0;
+
+		window.onscroll = function (e) {
+			scrollX = window.scrollX;
+			scrollY = window.scrollY;
+			lastScrollTime = performance.now();
+		};
+
+		window.resize = function (e) {
+			scrollX = window.scrollX;
+			scrollY = window.scrollY;
+			screenWidth = window.screen.width;
+			screenHeight = window.screen.height;
+			lastScrollTime = performance.now();
+		};
+
+		function Lifecycle() {
+			this._listeners = [];
+			this.scrollX = null;
+			this.scrollY = null;
+			this.screenHeight = screenHeight;
+			this.screenWidth = screenWidth;
+		}
+
+		Lifecycle.prototype = {
+			refresh: function refresh() {
+				this.scrollX = window.scrollX;
+				this.scrollY = window.scrollY;
+			},
+			addListener: function addListener(callback) {
+				this._listeners.push(callback);
+			},
+			trigger: function trigger() {
+				for (var i = 0; i < this._listeners.length; i++) {
+					this._listeners[i]();
+				}
+			}
+		};
+
+		var lazyNodeMap = new Map();
+		var lazyCheckRunning = false;
+
+		function handleLazyAttached(node, lifecycle, dom) {
+			lifecycle.addListener(function () {
+				var rect = dom.getBoundingClientRect();
+
+				if (lifecycle.scrollY === null) {
+					lifecycle.refresh();
+				}
+				node.clipData = {
+					top: rect.top + lifecycle.scrollY,
+					left: rect.left + lifecycle.scrollX,
+					bottom: rect.bottom + lifecycle.scrollY,
+					right: rect.right + lifecycle.scrollX,
+					pending: false
+				};
+			});
+		}
+
+		function patchLazyNode(value) {
+			patchNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, null, null, false, true);
+			value.clipData.pending = false;
+		}
+
+		function runPatchLazyNodes() {
+			lazyCheckRunning = true;
+			setTimeout(patchLazyNodes, 100);
+		}
+
+		function patchLazyNodes() {
+			lazyNodeMap.forEach(patchLazyNode);
+			lazyNodeMap.clear();
+			lazyCheckRunning = false;
+		}
+
+		function setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle) {
+			if (performance.now() > lastScrollTime + 2000) {
+				var lazyNodeEntry = lazyNodeMap.get(dom);
+
+				if (lazyNodeEntry === void 0) {
+					lazyNodeMap.set(dom, { lastNode: lastNode, nextNode: nextNode, parentDom: parentDom, clipData: clipData, lifecycle: lifecycle });
+				} else {
+					lazyNodeEntry.nextNode = nextNode;
+				}
+				clipData.pending = true;
+				if (lazyCheckRunning === false) {
+					runPatchLazyNodes();
+				}
+				return true;
+			} else {
+				patchLazyNodes();
+			}
+			return false;
+		}
+
+		var roots = [];
+
+		function getRoot(parentDom) {
+			for (var i = 0; i < roots.length; i++) {
+				var root = roots[i];
+
+				if (root.dom === parentDom) {
+					return root;
+				}
+			}
+			return null;
+		}
+
+		function removeRoot(rootNode) {
+			for (var i = 0; i < roots.length; i++) {
+				var root = roots[i];
+
+				if (root === rootNode) {
+					roots.splice(i, 1);
+					return;
+				}
+			}
+		}
+
+		function render(node, parentDom) {
+			var root = getRoot(parentDom);
+			var lifecycle = new Lifecycle();
+
+			if (root === null) {
+				mount(node, parentDom, lifecycle, {}, null, false);
+				lifecycle.trigger();
+				roots.push({ node: node, dom: parentDom });
+			} else {
+				var activeNode = getActiveNode();
+
+				patch(root.node, node, parentDom, lifecycle, {}, null, null, false);
+				lifecycle.trigger();
+				if (node === null) {
+					removeRoot(root);
+				}
+				root.node = node;
+				window.node = node;
+				resetActiveNode(activeNode);
+			}
+		}
+
+		var index = {
+			render: render
+		};
+
+		return index;
+	});
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.REMOVE_ALL_TODOS = exports.EDIT_TODO = exports.REMOVE_TODO = exports.ADD_TODO = undefined;
+	exports.registerActions = registerActions;
+
+	var _index = __webpack_require__(2);
+
+	var _index2 = _interopRequireDefault(_index);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ADD_TODO = exports.ADD_TODO = 'ADD_TODO';
+	var REMOVE_TODO = exports.REMOVE_TODO = 'REMOVE_TODO';
+	var EDIT_TODO = exports.EDIT_TODO = 'EDIT_TODO';
+
+	var REMOVE_ALL_TODOS = exports.REMOVE_ALL_TODOS = 'REMOVE_ALL_TODOS';
+
+	function registerActions() {
+	  _index2.default.registerAction(ADD_TODO, function (state, action) {
+	    var todos = state.todos.slice(0);
+	    var id = todos.length > 0 ? todos[todos.length - 1].id + 1 : 0;
+	    todos.push({ id: id, text: action.text });
+	    return { todos: todos };
+	  });
+
+	  _index2.default.registerAction(REMOVE_TODO, function (state, action) {
+	    var todos = state.todos.slice(0);
+	    todos.splice(todos.findIndex(function (t) {
+	      return t.id === action.id;
+	    }), 1);
+	    return { todos: todos };
+	  });
+
+	  _index2.default.registerAction(REMOVE_ALL_TODOS, function (state, action) {
+	    return { todos: [] };
+	  });
+	}
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.app = undefined;
+
+	var _index = __webpack_require__(2);
+
+	var _index2 = _interopRequireDefault(_index);
+
+	var _infernoCreateElement = __webpack_require__(23);
+
+	var _infernoCreateElement2 = _interopRequireDefault(_infernoCreateElement);
+
+	var _actions = __webpack_require__(27);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var inputBox = function inputBox(props) {
+	  return (0, _infernoCreateElement2.default)('span', null, (0, _infernoCreateElement2.default)('input', {
+	    type: 'text',
+	    onKeyUp: function onKeyUp(e) {
+	      if (e.keyCode === 13 && e.target.value.trim() !== '') {
+	        _index2.default.createAction(_actions.ADD_TODO, { text: e.target.value });
+	        e.target.value = '';
+	      }
+	    }
+	  }));
+	};
+
+	var todoList = function todoList(props) {
+	  return (0, _infernoCreateElement2.default)('div', { className: 'todo-list' }, props.todos.map(function (t) {
+	    return (0, _infernoCreateElement2.default)(todoItem, { todo: t });
+	  }));
+	};
+
+	var todoItem = function todoItem(props) {
+	  return (0, _infernoCreateElement2.default)('div', { className: 'todo-list__item' }, (0, _infernoCreateElement2.default)('span', null, props.todo.id + ' ' + props.todo.text), (0, _infernoCreateElement2.default)('button', {
+	    type: 'button',
+	    className: 'remove-button',
+	    onClick: _index2.default.bindAction(_actions.REMOVE_TODO, { id: props.todo.id })
+	  }, 'Remove'));
+	};
+
+	var app = exports.app = function app(props) {
+	  return (0, _infernoCreateElement2.default)('div', null, (0, _infernoCreateElement2.default)('div', { className: 'title' }, props.title), (0, _infernoCreateElement2.default)(inputBox, null),
+	  // createElement('button', {
+	  //   type: 'button',
+	  //   onClick: e => {
+	  //     if (e.keyCode === 13 && e.target.value.trim() !== '') {
+	  //       mini.createAction(ADD_TODO, { text: e.target.value })
+	  //       e.target.value = ''
+	  //     }
+	  //   }
+	  // }, 'Add todo'),
+	  (0, _infernoCreateElement2.default)(todoList, { todos: props.todos }), (0, _infernoCreateElement2.default)('button', {
+	    type: 'button',
+	    onClick: _index2.default.bindAction(_actions.REMOVE_ALL_TODOS)
+	  }, 'Remove all'));
+	};
+
+/***/ }
+/******/ ]);

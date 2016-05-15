@@ -75,9 +75,9 @@ mini.registerAction(ASYNC_ACTION_START, () => {
 })
 
 mini.registerAction(ASYNC_ACTION_FINISH, (state, action) => {
-  return Object.assign({}, state, {
+  return {
     data: action.data
-  })
+  }
 })
 
 mini.createAction(ASYNC_ACTION_START)
