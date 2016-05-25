@@ -1,4 +1,4 @@
-import mini from '../src'
+import mini from '../../src'
 import fetch from 'isomorphic-fetch'
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -25,19 +25,23 @@ let subscription = mini.subscribeToState(s => {
   console.log('error ' + e)
 })
 
+// set state to initial value
 mini.setState({
   yolo: 'yes',
   stuff: 0
 })
 
+// basic sync action diff
 mini.registerAction(MY_ACTION, (state, action) => {
   return {
     stuff: action.id
   }
 })
 
+// timeout action
 setTimeout(() => mini.createAction(MY_ACTION, { id: 1 }), 1000)
 
+// chained action with a promise
 mini.createAction(MY_ACTION, { id: 2 }).then(() => {
   mini.createAction(MY_ACTION, { id: 3 })
 })
@@ -49,9 +53,11 @@ mini.setState({
   stuff: 5
 })
 
+// attempt to set state to non-object value
 mini.setState(100)
 
-setTimeout(() => subscription.dispose(), 10000)
+// unsubscribe from the subscription after 10 seconds
+setTimeout(() => subscription.unsubscribe(), 10000)
 
 mini.registerAction(44, (state, action) => {
   return {
@@ -65,8 +71,10 @@ setTimeout(() => mini.createAction(MY_ACTION, { id: 7 }), 5000)
 
 mini.registerAction(MY_ACTION, () => true)
 
+// attempt to create action that does not exist
 mini.createAction('swag', { id: 0 })
 
+// async action with xhr
 mini.registerAction(ASYNC_ACTION_START, () => {
   fetch('http://jsonplaceholder.typicode.com/posts/1')
     .then(data => {

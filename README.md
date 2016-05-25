@@ -1,15 +1,7 @@
 # Mini
 
-Currently an experiment with JS application architecture.
+** These docs are a work in progress **
 
-Mostly inspired by Redux, Reflux and Cycle.js + RxJs.
+A simple, unidirectional way to manage application state using RxJS.
 
-Places all action handling in one spot through one global reducer and a function
-per action to update state (which is an alternate way of structuring redux too)
-
-
-Simple, minimal, light
-
-State is a stream
-
-View framework agnostic
+Mini is inspired by a number of popular frameworks/libraries for managing application state.

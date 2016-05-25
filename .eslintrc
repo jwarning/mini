@@ -13,7 +13,6 @@
   "rules": {
     "comma-dangle": [2, "never"],
     "no-console": 0,
-    "prefer-template": 0,
     "semi": [2, "never"]
   }
 }

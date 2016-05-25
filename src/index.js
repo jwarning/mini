@@ -5,8 +5,8 @@ const state = new Subject()
 
 let currentState = {}
 
-export function subscribeToState(success, error) {
-  return state.subscribe(success, error)
+export function subscribeToState(success, error, complete) {
+  return state.subscribe(success, error, complete)
 }
 
 export function setState(newState) {
@@ -27,7 +27,7 @@ export function registerAction(actionType, reducer) {
     console.error('Action reducer must be a function')
     return
   } else if (actions.has(actionType)) {
-    console.error('Action of type ' + actionType + ' is already registered')
+    console.error(`Action of type ${actionType} is already registered`)
     return
   }
 
@@ -37,7 +37,7 @@ export function registerAction(actionType, reducer) {
 export function createAction(actionType, action) {
   return new Promise((resolve, reject) => {
     if (!actions.has(actionType)) {
-      console.error('No action of type ' + actionType)
+      console.error(`No action of type: ${actionType}`)
       reject()
       return
     }
@@ -54,7 +54,7 @@ export function createAction(actionType, action) {
 }
 
 export function bindAction(...args) {
-  return createAction.bind(null, ...args)
+  return createAction.bind(undefined, ...args)
 }
 
 const mini = {
