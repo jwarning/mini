@@ -1,12 +1,19 @@
-import { Subject } from 'rxjs/Subject'
+import { Observable } from 'rxjs/Observable'
+import 'rxjs/add/observable/fromEventPattern'
+import 'rxjs/add/operator/scan'
 
 const actions = new Map()
-const state = new Subject()
+let dispatch = () => {}
 
-let currentState = {}
+const stateStream = Observable
+  .fromEventPattern(
+    handler => { dispatch = handler },
+    () => { dispatch = () => {} }
+  )
+  .scan((currentState, next) => Object.assign({}, currentState, next(currentState)), {})
 
-export function subscribeToState(success, error, complete) {
-  return state.subscribe(success, error, complete)
+export function getState() {
+  return stateStream
 }
 
 export function setState(newState) {
@@ -15,23 +22,22 @@ export function setState(newState) {
     return
   }
 
-  currentState = newState
-  state.next(currentState)
+  dispatch(() => newState)
 }
 
-export function registerAction(actionType, reducer) {
+export function registerAction(actionType, handler) {
   if (typeof actionType !== 'string') {
     console.error('Action type must be a string')
     return
-  } else if (typeof reducer !== 'function') {
-    console.error('Action reducer must be a function')
+  } else if (typeof handler !== 'function') {
+    console.error('Action handler must be a function')
     return
   } else if (actions.has(actionType)) {
     console.error(`Action of type ${actionType} is already registered`)
     return
   }
 
-  actions.set(actionType, reducer)
+  actions.set(actionType, handler)
 }
 
 export function createAction(actionType, action) {
@@ -42,23 +48,18 @@ export function createAction(actionType, action) {
       return
     }
 
-    const newState = actions.get(actionType)(currentState, action)
-
-    if (newState !== undefined) {
-      currentState = Object.assign({}, currentState, newState)
-      state.next(currentState)
-    }
+    dispatch(currentState => actions.get(actionType)(currentState, action))
 
     resolve()
   })
 }
 
-export function bindAction(...args) {
-  return createAction.bind(undefined, ...args)
+export function bindAction(actionType, action) {
+  return () => createAction(actionType, action)
 }
 
 const mini = {
-  subscribeToState,
+  getState,
   setState,
   registerAction,
   createAction,

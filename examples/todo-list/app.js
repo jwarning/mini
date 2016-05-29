@@ -6,7 +6,7 @@ import { app } from './components'
 
 registerActions()
 
-mini.subscribeToState(state => {
+mini.getState().subscribe(state => {
   console.log(state)
   InfernoDOM.render(createElement(app, state), document.getElementById('app'))
 }, error => {

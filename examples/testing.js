@@ -17,7 +17,7 @@ let myComponent = props => {
   )
 }
 
-let subscription = mini.subscribeToState(s => {
+let subscription = mini.getState().subscribe(s => {
   console.log(s)
   ReactDOM.render(React.createElement(myComponent, { id: s.stuff }),
     document.getElementById('app'))
