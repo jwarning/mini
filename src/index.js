@@ -1,8 +1,9 @@
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/fromEventPattern'
-import 'rxjs/add/operator/scan'
+import 'rxjs/add/operator/map'
 
-const actions = new Map()
+const actions = {}
+let currentState = {}
 let dispatch = () => {}
 
 const stateStream = Observable
@@ -10,7 +11,15 @@ const stateStream = Observable
     handler => { dispatch = handler },
     () => { dispatch = () => {} }
   )
-  .scan((currentState, next) => Object.assign({}, currentState, next(currentState)), {})
+  .map(next => {
+    const newState = next(currentState)
+
+    // only modify state if it has changed and is a valid object
+    if (newState && typeof newState === 'object') {
+      currentState = Object.assign({}, currentState, newState)
+    }
+    return currentState
+  })
 
 export function getState() {
   return stateStream
@@ -32,23 +41,23 @@ export function registerAction(actionType, handler) {
   } else if (typeof handler !== 'function') {
     console.error('Action handler must be a function')
     return
-  } else if (actions.has(actionType)) {
+  } else if (actions[actionType] !== undefined) {
     console.error(`Action of type ${actionType} is already registered`)
     return
   }
 
-  actions.set(actionType, handler)
+  actions[actionType] = handler
 }
 
 export function createAction(actionType, action) {
   return new Promise((resolve, reject) => {
-    if (!actions.has(actionType)) {
+    if (actions[actionType] === undefined) {
       console.error(`No action of type: ${actionType}`)
       reject()
       return
     }
 
-    dispatch(currentState => actions.get(actionType)(currentState, action))
+    dispatch(currentState => actions[actionType](currentState, action))
 
     resolve()
   })
