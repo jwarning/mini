@@ -57,7 +57,7 @@ export function createAction(actionType, action) {
       return
     }
 
-    dispatch(currentState => actions[actionType](currentState, action))
+    dispatch(state => actions[actionType](state, action))
 
     resolve()
   })
